@@ -1,0 +1,22 @@
+{
+  "title": "Create Osteopore ID",
+  "form": {
+    "name": "Name",
+    "nameHelp": "How shall we address you.",
+    "nameValidate": "Please provide valid name.",
+    "email": "Email",
+    "emailHelp": "We'll never share your email with anyone else.",
+    "emailValidate": "Please provide valid email address.",
+    "password": "Password",
+    "passwordHelp": "Your password must be 8-20 characters long, contain letters, numbers or special characters, and must not contain spaces or emoji.",
+    "passwordValidate": "Please provide valid password.",
+    "passwordConfirm": "Confirm Password",
+    "passwordConfirmHelp": "Please re-enter your password.",
+    "passwordConfirmValidate": "Password does not match.",
+    "button": "Register"
+  },
+  "messages": {
+    "summary": "Please verify your email",
+    "details": "An email has been sent to your email address containing an activation link. Please click on the link to activate your account. "
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "nav": {
+    "search": "Search",
+    "signin": "Sign in",
+    "messages": "Messages",
+    "account": "Account",
+    "admin": "Admin",
+    "signout": "Sign out",
+    "home": "Home",
+    "product": "Product",
+    "story": "Story",
+    "contactus": "Contact us"
+  },
+  "footer": {
+    "language": "Lanuage"
+  },
+  "error": {
+    "title": "Error",
+    "400": "Bad request.",
+    "403": "You are not authorized to access this page.",
+    "404": "The page does not exist.",
+    "500": "Internal server error."
+  }
+}

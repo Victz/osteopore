@@ -1,0 +1,13 @@
+{
+  "title": "登录",
+  "form": {
+    "login": "用户名，邮箱或手机号码",
+    "loginValidate": "请提供有效的用户名，邮箱或手机号码。",
+    "password": "密码",
+    "passwordValidate": "请提供有效的密码。",
+    "rememberme": "自动登录",
+    "button": "登录",
+    "createId": "创建帐户",
+    "forgot": "忘记密码?"
+  }
+}

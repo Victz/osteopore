@@ -1,0 +1,13 @@
+{
+  "nav": {
+    "messages": "消息",
+    "account": "帐户",
+    "admin": "管理",
+    "signout": "退出",
+    "returnHome": "返回首页",
+    "overview": "概览",
+    "inventory": "库存",
+    "order": "订单",
+    "case": "病例"
+  }
+}

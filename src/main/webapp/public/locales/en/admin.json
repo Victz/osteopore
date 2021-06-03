@@ -1,0 +1,28 @@
+{
+  "nav": {
+    "messages": "Messages",
+    "account": "Account",
+    "admin": "Admin",
+    "signout": "Sign out",
+    "returnHome": "Return Home",
+    "dashboard": "Dashboard",
+    "product": "Product",
+    "inventory": "Inventory",
+    "order": "Order",
+    "case": "Case",
+    "story": "Story",
+    "user": "User"
+  },
+  "view": {
+    "new": "New",
+    "export": "Export",
+    "filter": "Filter",
+    "sort": "Sort",
+    "empty": "Empty",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "confirmDeleteTitle": "Confirm to delete?"
+  }
+}

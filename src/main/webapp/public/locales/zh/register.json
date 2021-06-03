@@ -1,0 +1,22 @@
+{
+  "title": "创建 Osteopore 帐户",
+  "form": {
+    "name": "昵称",
+    "nameHelp": "我们该如何称呼您。",
+    "nameValidate": "请提供有效的昵称。",
+    "email": "邮箱",
+    "emailHelp": "我们会严格保密您的邮箱地址。",
+    "emailValidate": "请提供有效邮箱地址。",
+    "password": "密码",
+    "passwordHelp": "您的密码长度需为8-20位，包含字母，数字和特殊字符，并且不可以包含空格或表情。",
+    "passwordValidate": "请提供有效的密码。",
+    "passwordConfirm": "确认密码",
+    "passwordConfirmHelp": "请重复输入您的密码。",
+    "passwordConfirmValidate": "两次输入的密码不匹配。",
+    "button": "注册"
+  },
+  "messages": {
+    "summary": "请验证您的邮箱",
+    "details": "我们给您发送了一封邮件，请点击邮件中的链接激活您的帐号。"
+  }
+}

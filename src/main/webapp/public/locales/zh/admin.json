@@ -1,0 +1,28 @@
+{
+  "nav": {
+    "messages": "消息",
+    "account": "帐户",
+    "admin": "管理",
+    "signout": "退出",
+    "returnHome": "返回首页",
+    "dashboard": "控制台",
+    "product": "产品",
+    "inventory": "库存",
+    "order": "订单",
+    "case": "病例",
+    "story": "品牌故事",
+    "user": "用户"
+  },
+  "view": {
+    "new": "新建",
+    "export": "导出",
+    "filter": "筛选",
+    "sort": "排序",
+    "empty": "无记录",
+    "edit": "编辑",
+    "delete": "删除",
+    "confirm": "确认",
+    "cancel": "取消",
+    "confirmDeleteTitle": "确认删除？"
+  }
+}

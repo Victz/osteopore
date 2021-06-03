@@ -1,0 +1,74 @@
+plugins {
+    id "org.springframework.boot" version "${spring_boot_version}"
+    id "io.spring.dependency-management" version "${spring_dependency_management_version}"
+    id "java"
+}
+
+group = "com.osteopore"
+version = "0.0.1-SNAPSHOT"
+sourceCompatibility = "${java_version}"
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-mail"
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.boot:spring-boot-configuration-processor"
+    implementation "javax.validation:validation-api:${javax_validation_version}"
+    implementation "org.apache.commons:commons-lang3"
+    implementation "io.jsonwebtoken:jjwt-api:${jsonwebtoken_version}"
+    implementation "org.mapstruct:mapstruct:${mapstruct_version}"
+    compileOnly "org.projectlombok:lombok"
+    annotationProcessor "org.projectlombok:lombok"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
+    runtimeOnly "mysql:mysql-connector-java"
+    //runtimeOnly "org.apache.derby:derby"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${jsonwebtoken_version}"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${jsonwebtoken_version}"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.security:spring-security-test"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+defaultTasks "bootRun"
+
+task npmBuild(type: Exec) {
+    workingDir = file(node_project)
+    commandLine node_manager, "run", "build"
+}
+
+task npmInstall(type: Exec) {
+    workingDir = file(node_project)
+    commandLine node_manager, "install"
+}
+
+task frontendAssemble(type: Copy, dependsOn: "npmBuild") {
+    def buildDir = file("$node_project/build")
+    from buildDir
+    into "build/resources/main/static"
+}
+
+processResources.dependsOn 'frontendAssemble'
+
+if (project.hasProperty("node.install")) {
+    npmBuild.dependsOn 'npmInstall'
+}

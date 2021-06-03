@@ -1,0 +1,13 @@
+{
+  "nav": {
+    "messages": "Messages",
+    "account": "Account",
+    "admin": "Admin",
+    "signout": "Sign out",
+    "returnHome": "Return Home",
+    "overview": "Overview",
+    "inventory": "Inventory",
+    "order": "Order",
+    "case": "Case"
+  }
+}

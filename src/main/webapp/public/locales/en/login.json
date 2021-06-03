@@ -1,0 +1,13 @@
+{
+  "title": "Sign in",
+  "form": {
+    "login": "username, email or phone",
+    "loginValidate": "Please provide valid username, email or phone number.",
+    "password": "password",
+    "passwordValidate": "Please provide valid password.",
+    "rememberme": "Remember me",
+    "button": "Sign in",
+    "createId": "Create ID",
+    "forgot": "Forget Password?"
+  }
+}
