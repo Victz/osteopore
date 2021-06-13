@@ -23,6 +23,13 @@
     "delete": "删除",
     "confirm": "确认",
     "cancel": "取消",
-    "confirmDeleteTitle": "确认删除？"
+    "confirmDeleteTitle": "确认删除？",
+    "notSorted": "无排序",
+    "ascending": "正序",
+    "descending": "倒序",
+    "createdDate": "创建日期",
+    "lastModifiedDate": "修改日期",
+    "select": "选择",
+    "save": "保存"
   }
 }

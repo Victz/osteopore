@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -83,11 +84,10 @@ public class UserService {
         entity.setName(user.getName());
         entity.setUsername(entity.getId());
         entity.setEmail(user.getEmail().toLowerCase());
+        entity.setPassword(encryptedPassword);
         entity.setLocale(LocaleContextHolder.getLocale().getLanguage());
         entity.setActivationKey(UUID.randomUUID().toString());
-        userRepository.save(entity);
-        log.debug("Created User: {}", entity);
-        return entity;
+        return userRepository.save(entity);
     }
 
     public void activate(String key) {
@@ -124,6 +124,7 @@ public class UserService {
         return userModel;
     }
 
+    @Transactional(readOnly = true)
     public PageModel<User> list(String path) {
 
         PageModel<User> pageModel = new PageModel<>();
@@ -162,18 +163,26 @@ public class UserService {
                     for (Field field : User.class.getDeclaredFields()) {
                         if (field.getName().equalsIgnoreCase(sortArray[0])) {
                             pageModel.getSort().put("user." + sortArray[0], sortArray.length == 2 && sortArray[1].equalsIgnoreCase("desc") ? "desc" : "asc");
+                            break;
                         }
                     }
                     for (Field field : AbstractEntity.class.getDeclaredFields()) {
                         if (field.getName().equalsIgnoreCase(sortArray[0])) {
                             pageModel.getSort().put("user." + sortArray[0], sortArray.length == 2 && sortArray[1].equalsIgnoreCase("desc") ? "desc" : "asc");
+                            break;
                         }
                     }
                 } else {
                     for (Field field : User.class.getDeclaredFields()) {
                         if (field.getName().equalsIgnoreCase(key)) {
-                            params.add("%" + value.replace(" ", "%") + "%");
-                            jpql.append(" and user.").append(field.getName()).append(" like ?").append(params.size());
+                            if (field.getType().equals(String.class)) {
+                                params.add("%" + value.replace(" ", "%") + "%");
+                                jpql.append(" and user.").append(field.getName()).append(" like ?").append(params.size());
+                            } else if (field.getType().equals(Boolean.class)) {
+                                params.add(Boolean.valueOf(value));
+                                jpql.append(" and user.").append(field.getName()).append(" = ?").append(params.size());
+                            }
+                            break;
                         }
                     }
                 }
@@ -192,7 +201,7 @@ public class UserService {
         if (pageModel.getNumber() == 1) pageModel.setFirst(true);
         if (pageModel.getNumber() == pageModel.getTotalPages()) pageModel.setLast(true);
         int[] range = {(pageModel.getNumber() - 1) * pageModel.getSize(), pageModel.getSize()};
-        List<User> users = userRepository.findAll("select user" + jpql.toString(), params.toArray(), range, pageModel.getSort());
+        List<User> users = userRepository.findAll("select user" + jpql, params.toArray(), range, pageModel.getSort());
         pageModel.setContent(users == null ? new ArrayList<>() : users);
         return pageModel;
 
@@ -292,103 +301,44 @@ public class UserService {
 //                    return user;
 //                });
 //    }
-//
-//    public User createUser(UserDTO userDTO) {
-//        User user = new User();
-//        user.setLogin(userDTO.getLogin().toLowerCase());
-//        user.setFirstName(userDTO.getFirstName());
-//        user.setLastName(userDTO.getLastName());
-//        if (userDTO.getEmail() != null) {
-//            user.setEmail(userDTO.getEmail().toLowerCase());
-//        }
-//        user.setImageUrl(userDTO.getImageUrl());
-//        if (userDTO.getLangKey() == null) {
-//            user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
-//        } else {
-//            user.setLangKey(userDTO.getLangKey());
-//        }
-//        String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
-//        user.setPassword(encryptedPassword);
-//        user.setResetKey(RandomUtil.generateResetKey());
-//        user.setResetDate(Instant.now());
-//        user.setActivated(true);
-//        if (userDTO.getAuthorities() != null) {
-//            Set<Authority> authorities = userDTO.getAuthorities().stream()
-//                    .map(authorityRepository::findById)
-//                    .filter(Optional::isPresent)
-//                    .map(Optional::get)
-//                    .collect(Collectors.toSet());
-//            user.setAuthorities(authorities);
-//        }
-//        userRepository.save(user);
-//        log.debug("Created Information for User: {}", user);
-//        return user;
-//    }
-//
-//    /**
-//     * Update all information for a specific user, and return the modified user.
-//     *
-//     * @param userDTO user to update.
-//     * @return updated user.
-//     */
-//    public Optional<UserDTO> updateUser(UserDTO userDTO) {
-//        return Optional.of(userRepository
-//                .findById(userDTO.getId()))
-//                .filter(Optional::isPresent)
-//                .map(Optional::get)
-//                .map(user -> {
-//                    user.setLogin(userDTO.getLogin().toLowerCase());
-//                    user.setFirstName(userDTO.getFirstName());
-//                    user.setLastName(userDTO.getLastName());
-//                    if (userDTO.getEmail() != null) {
-//                        user.setEmail(userDTO.getEmail().toLowerCase());
-//                    }
-//                    user.setImageUrl(userDTO.getImageUrl());
-//                    user.setActivated(userDTO.isActivated());
-//                    user.setLangKey(userDTO.getLangKey());
-//                    Set<Authority> managedAuthorities = user.getAuthorities();
-//                    managedAuthorities.clear();
-//                    userDTO.getAuthorities().stream()
-//                            .map(authorityRepository::findById)
-//                            .filter(Optional::isPresent)
-//                            .map(Optional::get)
-//                            .forEach(managedAuthorities::add);
-//                    log.debug("Changed Information for User: {}", user);
-//                    return user;
-//                })
-//                .map(UserDTO::new);
-//    }
-//
-//    public void deleteUser(String login) {
-//        userRepository.findOneByLogin(login).ifPresent(user -> {
-//            userRepository.delete(user);
-//            log.debug("Deleted User: {}", user);
-//        });
-//    }
-//
-//    /**
-//     * Update basic information (first name, last name, email, language) for the current user.
-//     *
-//     * @param firstName first name of user.
-//     * @param lastName last name of user.
-//     * @param email email id of user.
-//     * @param langKey language key.
-//     * @param imageUrl image URL of user.
-//     */
-//    public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl) {
-//        SecurityUtils.getCurrentUserLogin()
-//                .flatMap(userRepository::findOneByLogin)
-//                .ifPresent(user -> {
-//                    user.setFirstName(firstName);
-//                    user.setLastName(lastName);
-//                    if (email != null) {
-//                        user.setEmail(email.toLowerCase());
-//                    }
-//                    user.setLangKey(langKey);
-//                    user.setImageUrl(imageUrl);
-//                    log.debug("Changed Information for User: {}", user);
-//                });
-//    }
+
+    public User create(User user) {
+
+        if (user.getId() != null) {
+            throw new BadRequestException(messageSource.getMessage("error.create", null, LocaleContextHolder.getLocale()));
+        }
+
+        User entity = userRepository.findByEmail(user.getEmail().toLowerCase()).orElse(null);
+        if (entity != null) {
+            throw new BadRequestException(messageSource.getMessage("user.email.alreadyexist", null, LocaleContextHolder.getLocale()));
+        }
+
+        entity = new User();
+        entity.setId(UUID.randomUUID().toString());
+        entity.setName(user.getName());
+        entity.setUsername(entity.getId());
+        entity.setEmail(user.getEmail().toLowerCase());
+        entity.setPassword(passwordEncoder.encode(user.getPassword()));
+        entity.setActivated(user.isActivated());
+        return userRepository.save(entity);
+    }
+
+    public User update(User user) {
+        if (user.getId() == null) {
+            throw new BadRequestException(messageSource.getMessage("error.update", null, LocaleContextHolder.getLocale()));
+        }
+
+        User entity = userRepository.findById(user.getId()).orElse(null);
+        if (entity == null) {
+            throw new BadRequestException(messageSource.getMessage("error.update", null, LocaleContextHolder.getLocale()));
+        }
+
+        entity.setName(user.getName());
+        entity.setEmail(user.getEmail().toLowerCase());
+        entity.setPassword(passwordEncoder.encode(user.getPassword()));
+        entity.setActivated(user.isActivated());
+        return userRepository.save(entity);
+    }
 //
 //    @Transactional
 //    public void changePassword(String currentClearTextPassword, String newPassword) {
@@ -404,34 +354,19 @@ public class UserService {
 //                    log.debug("Changed password for User: {}", user);
 //                });
 //    }
-//
-//    @Transactional(readOnly = true)
-//    public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
-//        return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDTO::new);
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public Optional<User> getUserWithAuthoritiesByLogin(String login) {
-//        return userRepository.findOneWithAuthoritiesByLogin(login);
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public Optional<User> getUserWithAuthorities() {
-//        return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithAuthoritiesByLogin);
-//    }
-//
-//    /**
-//     * Not activated users should be automatically deleted after 3 days.
-//     * <p>
-//     * This is scheduled to get fired everyday, at 01:00 (am).
-//     */
-//    @Scheduled(cron = "0 0 1 * * ?")
-//    public void removeNotActivatedUsers() {
+
+    /**
+     * Not activated users should be automatically deleted after 3 days.
+     * <p>
+     * This is scheduled to get fired everyday, at 01:00 (am).
+     */
+    @Scheduled(cron = "0 0 1 * * ?")
+    public void removeNotActivatedUsers() {
 //        userRepository
 //                .findAllByActivatedIsFalseAndActivationKeyIsNotNullAndCreatedDateBefore(Instant.now().minus(3, ChronoUnit.DAYS))
 //                .forEach(user -> {
 //                    log.debug("Deleting not activated user {}", user.getLogin());
 //                    userRepository.delete(user);
 //                });
-//    }
+    }
 }

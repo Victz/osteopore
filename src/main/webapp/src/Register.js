@@ -17,7 +17,7 @@ const Register = (props) => {
         passwordConfirm: ''
     });
 
-    const patternEmail = /^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$/;
+    const patternEmail = /^[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$/;
 
     const handleChange = (event) => {
         event.persist();

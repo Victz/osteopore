@@ -75,12 +75,9 @@ public class UserController {
      */
     @PostMapping("/admin/user")
     public ResponseEntity<User> create(@RequestBody User user) {
-        log.debug("REST request to save User : {}", user);
-//        if (user.getId() != null) {
-//            throw new BadRequestAlertException("A new user cannot already have an ID", ENTITY_NAME, "idexists");
-//        }
-        User result = userRepository.save(user);
-        return ResponseEntity.ok().body(result);
+        log.debug("REST request to create User : {}", user);
+        User entity = userService.create(user);
+        return ResponseEntity.ok().body(entity);
     }
 
     /**
@@ -94,11 +91,8 @@ public class UserController {
     @PutMapping("/admin/user")
     public ResponseEntity<User> update(@RequestBody User user) {
         log.debug("REST request to update User : {}", user);
-//        if (user.getId() == null) {
-//            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-//        }
-        User result = userRepository.save(user);
-        return ResponseEntity.ok().body(result);
+        User entity = userService.update(user);
+        return ResponseEntity.ok().body(entity);
     }
 
 }

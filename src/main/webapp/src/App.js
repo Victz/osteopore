@@ -1,6 +1,6 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './app.scss';
-import {BrowserRouter as Router, Redirect, Route, Switch} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import Main from "./layout/Main";
 import React from "react";
 import MainAdmin from "./layout/Admin";
@@ -13,8 +13,8 @@ const App = (props) => {
     return (
         <Router>
             <Switch>
-                <PrivateRoute path='/home/:path?' component={MainHome} />
-                <AdminRoute path='/admin/:path?' component={MainAdmin} />
+                <PrivateRoute path='/home/:path?' component={MainHome}/>
+                <AdminRoute path='/admin/:path?' component={MainAdmin}/>
                 <Route><Main/></Route>
             </Switch>
         </Router>

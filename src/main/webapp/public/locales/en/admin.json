@@ -23,6 +23,13 @@
     "delete": "Delete",
     "confirm": "Confirm",
     "cancel": "Cancel",
-    "confirmDeleteTitle": "Confirm to delete?"
+    "confirmDeleteTitle": "Confirm to delete?",
+    "notSorted": "Not Sorted",
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "createdDate": "Created Date",
+    "lastModifiedDate": "Last Modified",
+    "select": "Select",
+    "save": "Save"
   }
 }

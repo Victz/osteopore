@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min';
 import i18n from "./module/i18n";
 import App from './App';
 import reportWebVitals from './reportWebVitals';

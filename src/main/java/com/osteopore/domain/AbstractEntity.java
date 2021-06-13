@@ -1,5 +1,6 @@
 package com.osteopore.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -9,11 +10,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
+import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Objects;
-import javax.persistence.Id;
 
 /**
  * Base abstract class for entities which will hold definitions for created, last modified, created by, last modified by attributes.
@@ -34,7 +35,8 @@ public abstract class AbstractEntity implements Serializable {
 
     @CreatedDate
     @Column(name = "CREATED_DATE", nullable = false, updatable = false)
-    protected Instant createdDate = Instant.now();
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    protected LocalDateTime createdDate = LocalDateTime.now();
 
     @LastModifiedBy
     @Column(name = "LAST_MODIFIED_BY", length = 255)
@@ -42,7 +44,8 @@ public abstract class AbstractEntity implements Serializable {
 
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
-    protected Instant lastModifiedDate = Instant.now();
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    protected LocalDateTime lastModifiedDate = LocalDateTime.now();
 
     @JsonIgnore
     @Column(name = "DELETED", nullable = false)
@@ -64,11 +67,11 @@ public abstract class AbstractEntity implements Serializable {
         this.createdBy = createdBy;
     }
 
-    public Instant getCreatedDate() {
+    public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Instant createdDate) {
+    public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
@@ -80,11 +83,11 @@ public abstract class AbstractEntity implements Serializable {
         this.lastModifiedBy = lastModifiedBy;
     }
 
-    public Instant getLastModifiedDate() {
+    public LocalDateTime getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(Instant lastModifiedDate) {
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 

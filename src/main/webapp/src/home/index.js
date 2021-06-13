@@ -1,12 +1,9 @@
 import React from 'react';
-import {useHistory, useLocation} from 'react-router-dom';
 import {useTranslation} from "react-i18next";
 
 const Home = (props) => {
 
     const {t, i18n} = useTranslation('home');
-    const location = useLocation();
-    const history = useHistory();
 
     return (
         <div>

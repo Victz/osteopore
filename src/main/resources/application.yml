@@ -15,7 +15,7 @@ spring:
         bootstrap-mode: deferred
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306/OSTEOPORE?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/OSTEOPORE?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&useLegacyDatetimeCode=false
     username: root
     password: database20!7
     #    url: jdbc:h2:mem:retaildb

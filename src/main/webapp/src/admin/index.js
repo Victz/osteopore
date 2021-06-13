@@ -1,17 +1,9 @@
-import React, {useState} from 'react';
-import {useHistory, useLocation} from 'react-router-dom';
+import React from 'react';
 import {useTranslation} from "react-i18next";
-import Auth from "../module/Auth";
 
 const Admin = (props) => {
 
     const {t, i18n} = useTranslation('admin');
-    const location = useLocation();
-    const history = useHistory();
-
-    const [values, setValues] = useState({
-        currentUser: Auth.getCurrentUser()
-    });
 
     return (
         <div>
