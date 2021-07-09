@@ -1,0 +1,13 @@
+{
+  "title": "Story Management",
+  "search": "Search title...",
+  "name": "Title",
+  "nameValidate": "Please provide valid title.",
+  "content": "Content",
+  "picture": "Picture",
+  "uploadValidateLength": "Maximum 10 files can be upload at one time.",
+  "uploadValidateSize": "File size is larger than allowed maximus size.",
+  "attachment": "Attachment",
+  "private": "Private",
+  "public": "Public"
+}

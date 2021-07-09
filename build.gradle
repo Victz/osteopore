@@ -35,6 +35,7 @@ dependencies {
     implementation "io.jsonwebtoken:jjwt-api:${jsonwebtoken_version}"
     implementation "org.mapstruct:mapstruct:${mapstruct_version}"
     compileOnly "org.projectlombok:lombok"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
     runtimeOnly "mysql:mysql-connector-java"

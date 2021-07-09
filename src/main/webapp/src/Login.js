@@ -15,7 +15,6 @@ const Login = (props) => {
         login: '',
         password: ''
     });
-
     const handleChange = (event) => {
         event.persist();
         let name = event.target.name;
@@ -28,11 +27,11 @@ const Login = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         if (!(event.target.elements["login"].value.trim() !== "")) {
-            event.target.elements["login"].nextSibling.classList.remove("d-none");
+            event.target.elements["login"].nextSibling.nextSibling.classList.remove("d-none");
             return false;
         }
         if (!(event.target.elements["password"].value.trim().length > 7)) {
-            event.target.elements["password"].nextSibling.classList.remove("d-none");
+            event.target.elements["password"].nextSibling.nextSibling.classList.remove("d-none");
             return false;
         }
         setValues((values) => ({
@@ -66,22 +65,22 @@ const Login = (props) => {
             <div className="banner text-light my-3 text-center" style={{backgroundImage: `url(${backgroundImage})`}}>
                 <h3>{t("title")}</h3>
             </div>
-            <form className="my-5" onSubmit={handleSubmit}>
+            <form className="form-sm my-5" onSubmit={handleSubmit}>
                 {values.message && (
                     <div className="mb-3">
                         <div className="alert alert-danger" role="alert">{values.message}</div>
                     </div>
                 )}
-                <div className="mb-3">
-                    <label htmlFor="login" className="col-form-label sr-only">{t("form.login")}</label>
+                <div className="form-floating mb-3">
                     <input type="text" name="login" className="form-control" placeholder={t("form.login")}
                            autoComplete="off" value={values.login} onChange={handleChange} required autoFocus/>
+                    <label htmlFor="login">{t("form.login")}</label>
                     <div className="text-danger d-none"><i className='fa fa-exclamation-circle'></i> {t("form.loginValidate")}</div>
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="password" className="col-form-label sr-only">{t("form.password")}</label>
+                <div className="form-floating mb-3">
                     <input type="password" name="password" className="form-control" placeholder={t("form.password")}
                            value={values.password} onChange={handleChange} required/>
+                    <label htmlFor="password">{t("form.password")}</label>
                     <div className="text-danger d-none"><i className='fa fa-exclamation-circle'></i> {t("form.passwordValidate")}</div>
                 </div>
                 <div className="mb-3 d-grid gap-2">

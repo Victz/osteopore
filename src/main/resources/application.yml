@@ -58,6 +58,10 @@ spring:
     port: 587
     username: no-reply@victz.com
     password: e8kcbLJu2WfD9Gqn
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 1GB
 application:
   token:
     issuer: ${spring.application.name}
@@ -72,3 +76,6 @@ application:
     base-url: http://127.0.0.1:8080
   page:
     size: 20
+    pagination: 5
+  upload:
+    path: /Users/shawn/Work/Osteopore/uploads

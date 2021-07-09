@@ -30,7 +30,7 @@ const Register = (props) => {
             if (value.trim().length > 1) {
                 event.target.classList.remove("border-danger");
                 event.target.classList.add('border-success');
-                event.target.nextSibling.nextSibling.classList.add("d-none");
+                event.target.nextSibling.nextSibling.nextSibling.classList.add("d-none");
             } else {
                 event.target.classList.remove("border-success");
                 event.target.classList.add('border-danger');
@@ -39,7 +39,7 @@ const Register = (props) => {
             if (value.trim() !== "" && patternEmail.test(value.trim())) {
                 event.target.classList.remove("border-danger");
                 event.target.classList.add('border-success');
-                event.target.nextSibling.nextSibling.classList.add("d-none");
+                event.target.nextSibling.nextSibling.nextSibling.classList.add("d-none");
             } else {
                 event.target.classList.remove("border-success");
                 event.target.classList.add('border-danger');
@@ -48,7 +48,7 @@ const Register = (props) => {
             if (value.trim().length > 7) {
                 event.target.classList.remove("border-danger");
                 event.target.classList.add('border-success');
-                event.target.nextSibling.nextSibling.classList.add("d-none");
+                event.target.nextSibling.nextSibling.nextSibling.classList.add("d-none");
             } else {
                 event.target.classList.remove("border-success");
                 event.target.classList.add('border-danger');
@@ -57,7 +57,7 @@ const Register = (props) => {
             if (value.trim().length > 7 && value.trim() === values.password) {
                 event.target.classList.remove("border-danger");
                 event.target.classList.add('border-success');
-                event.target.nextSibling.nextSibling.classList.add("d-none");
+                event.target.nextSibling.nextSibling.nextSibling.classList.add("d-none");
             } else {
                 event.target.classList.remove("border-success");
                 event.target.classList.add('border-danger');
@@ -68,19 +68,19 @@ const Register = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         if (!(event.target.elements["name"].value.trim().length > 1)) {
-            event.target.elements["name"].nextSibling.nextSibling.classList.remove("d-none");
+            event.target.elements["name"].nextSibling.nextSibling.nextSibling.classList.remove("d-none");
             return false;
         }
         if (!(event.target.elements["email"].value.trim() !== "" && patternEmail.test(event.target.elements["email"].value.trim()))) {
-            event.target.elements["email"].nextSibling.nextSibling.classList.remove("d-none");
+            event.target.elements["email"].nextSibling.nextSibling.nextSibling.classList.remove("d-none");
             return false;
         }
         if (!(event.target.elements["password"].value.trim().length > 7)) {
-            event.target.elements["password"].nextSibling.nextSibling.classList.remove("d-none");
+            event.target.elements["password"].nextSibling.nextSibling.nextSibling.classList.remove("d-none");
             return false;
         }
         if (!(event.target.elements["passwordConfirm"].value.trim().length > 7 && event.target.elements["passwordConfirm"].value.trim() === values.password)) {
-            event.target.elements["passwordConfirm"].nextSibling.nextSibling.classList.remove("d-none");
+            event.target.elements["passwordConfirm"].nextSibling.nextSibling.nextSibling.classList.remove("d-none");
             return false;
         }
         setValues((values) => ({
@@ -119,37 +119,37 @@ const Register = (props) => {
             <div className="banner text-light my-3 text-center" style={{backgroundImage: `url(${backgroundImage})`}}>
                 <h3>{t("title")}</h3>
             </div>
-            <form className="my-5" onSubmit={handleSubmit}>
+            <form className="form-sm my-5" onSubmit={handleSubmit}>
                 {values.message && (
                     <div className="mb-3">
                         <div className="alert alert-danger" role="alert">{values.message}</div>
                     </div>
                 )}
-                <div className="mb-3">
-                    <label htmlFor="name" className="col-form-label sr-only">{t("form.name")}</label>
+                <div className="form-floating mb-3">
                     <input type="text" name="name" className="form-control" placeholder={t("form.name")} aria-describedby="nameHelp"
                            autoComplete="off" value={values.name} onChange={handleChange} required autoFocus/>
+                    <label htmlFor="name">{t("form.name")}</label>
                     <small id="nameHelp" className="form-text text-muted">{t("form.nameHelp")}</small>
                     <div className="text-danger d-none"><i className='fa fa-exclamation-circle'></i> {t("form.nameValidate")}</div>
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="email" className="col-form-label sr-only">{t("form.email")}</label>
+                <div className="form-floating mb-3">
                     <input type="text" name="email" className="form-control" placeholder={t("form.email")} aria-describedby="emailHelp"
                            autoComplete="off" value={values.email} onChange={handleChange} required/>
+                    <label htmlFor="email">{t("form.email")}</label>
                     <small id="emailHelp" className="form-text text-muted">{t("form.emailHelp")}</small>
                     <div className="text-danger d-none"><i className='fa fa-exclamation-circle'></i> {t("form.emailValidate")}</div>
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="password" className="col-form-label sr-only">{t("form.password")}</label>
+                <div className="form-floating mb-3">
                     <input type="password" name="password" className="form-control" placeholder={t("form.password")} aria-describedby="passwordHelp"
                            value={values.password} onChange={handleChange} required/>
+                    <label htmlFor="password">{t("form.password")}</label>
                     <small id="passwordHelp" className="form-text text-muted">{t("form.passwordHelp")}</small>
                     <div className="text-danger d-none"><i className='fa fa-exclamation-circle'></i> {t("form.passwordValidate")}</div>
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="passwordConfirm" className="col-form-label sr-only">{t("form.passwordConfirm")}</label>
+                <div className="form-floating mb-3">
                     <input type="password" name="passwordConfirm" className="form-control" placeholder={t("form.passwordConfirm")}
                            aria-describedby="passwordConfirmHelp" value={values.passwordConfirm} onChange={handleChange} required/>
+                    <label htmlFor="passwordConfirm">{t("form.passwordConfirm")}</label>
                     <small id="passwordConfirmHelp" className="form-text text-muted">{t("form.passwordConfirmHelp")}</small>
                     <div className="text-danger d-none"><i className='fa fa-exclamation-circle'></i> {t("form.passwordConfirmValidate")}</div>
                 </div>

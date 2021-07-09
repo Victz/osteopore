@@ -1,0 +1,18 @@
+{
+  "title": "Product Management",
+  "search": "Search name...",
+  "name": "Name",
+  "nameValidate": "Please provide valid name.",
+  "code": "Code",
+  "price": "Price",
+  "priceValidate": "Please provide valid price",
+  "priceFrom": "Price From",
+  "priceTo": "Price To",
+  "description": "Description",
+  "picture": "Picture",
+  "uploadValidateLength": "Maximum 10 files can be upload at one time.",
+  "uploadValidateSize": "File size is larger than allowed maximus size.",
+  "attachment": "Attachment",
+  "sale": "Sale",
+  "suspend": "Suspend"
+}

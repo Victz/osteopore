@@ -6,9 +6,9 @@ import Utils from "../module/Utils";
 import axios from "axios";
 import {DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody, ModalFooter, ModalHeader, UncontrolledButtonDropdown} from "reactstrap";
 
-const Users = (props) => {
+const Stories = (props) => {
 
-    const {t, i18n} = useTranslation('user', 'admin');
+    const {t, i18n} = useTranslation('story', 'admin');
     const location = useLocation();
     const history = useHistory();
 
@@ -66,7 +66,7 @@ const Users = (props) => {
         setValues((values) => ({
             ...values, modal: !values.modal, loading: true
         }));
-        await axios.delete("/api/admin/user/" + id, {headers: Auth.authHeader()}).then((response) => {
+        await axios.delete("/api/admin/story/" + id, {headers: Auth.authHeader()}).then((response) => {
                 console.log(response);
                 loadPage(values.params);
             }, error => {
@@ -80,11 +80,8 @@ const Users = (props) => {
 
     const [filter, setFilter] = useState({
         modal: false,
-        name: "",
-        username: '',
-        email: '',
-        phone: '',
-        activated: ''
+        title: "",
+        published: ""
     })
 
 
@@ -101,7 +98,7 @@ const Users = (props) => {
         if (!values.params) return;
         const timeOutId = setTimeout(() => {
             let params = values.params;
-            params = Utils.buildParams(params, "/name/", filter.name);
+            params = Utils.buildParams(params, "/title/", filter.title);
             loadPage(params);
             setValues((values) => ({
                 ...values, params: params
@@ -119,10 +116,7 @@ const Users = (props) => {
 
     const handleFilter = () => {
         let params = values.params;
-        params = Utils.buildParams(params, "/username/", filter.username);
-        params = Utils.buildParams(params, "/email/", filter.email);
-        params = Utils.buildParams(params, "/phone/", filter.phone);
-        params = Utils.buildParams(params, "/activated/", filter.activated)
+        params = Utils.buildParams(params, "/published/", filter.published);
         setFilter((values) => ({
             ...values, modal: !filter.modal
         }));
@@ -134,10 +128,7 @@ const Users = (props) => {
 
     const [sort, setSort] = useState({
         modal: false,
-        name: '',
-        username: '',
-        email: '',
-        phone: '',
+        title: '',
         createdDate: '',
         lastModifiedDate: ''
     })
@@ -159,10 +150,7 @@ const Users = (props) => {
 
     const handleSort = () => {
         let params = values.params;
-        params = Utils.buildSort(params, "/sort/name", sort.name);
-        params = Utils.buildSort(params, "/sort/username", sort.username);
-        params = Utils.buildSort(params, "/sort/email", sort.email);
-        params = Utils.buildSort(params, "/sort/phone", sort.phone);
+        params = Utils.buildSort(params, "/sort/title", sort.title);
         params = Utils.buildSort(params, "/sort/createdDate", sort.createdDate);
         params = Utils.buildSort(params, "/sort/lastModifiedDate", sort.lastModifiedDate);
         setSort((values) => ({
@@ -178,11 +166,11 @@ const Users = (props) => {
         <>
             <ol className="breadcrumb mt-3 p-2 rounded-start">
                 <li className="breadcrumb-item"><Link to="/admin"><i className="fas fa-tachometer-alt fa-lg fa-fw"></i> {t("admin:nav.dashboard")}</Link></li>
-                <li className="breadcrumb-item active"><i className="fas fa-users fa-lg fa-fw"></i> {t("admin:nav.user")}</li>
+                <li className="breadcrumb-item active"><i className="fas fa-newspaper fa-lg fa-fw"></i> {t("admin:nav.story")}</li>
             </ol>
             <h1 className="h3 mt-5 text-muted">{t("title")}</h1>
             <div className="btn-toolbar mt-5 justify-content-end" role="toolbar">
-                <Link className="btn btn-primary btn-sm shadow ms-2" to="/admin/user">
+                <Link className="btn btn-primary btn-sm shadow ms-2" to="/admin/story">
                     <i className="fas fa-plus fa-fw"> </i><span className="d-none d-sm-inline-block">{t("admin:view.new")}</span>
                 </Link>
                 <button type="button" className="btn btn-borderless btn-sm shadow ms-2" onClick={modalFilterToggle}>
@@ -197,7 +185,7 @@ const Users = (props) => {
             </div>
             <div className="search rounded-start mt-3">
                 <span className="icon"><i className="fa fa-search" aria-hidden="true"></i></span>
-                <input type="search" name="name" placeholder={t("search")} value={filter.name} onChange={handleFilterChange}/>
+                <input type="search" name="name" placeholder={t("search")} value={filter.title} onChange={handleFilterChange}/>
             </div>
             {values.message && (
                 <div className="mt-3">
@@ -206,33 +194,30 @@ const Users = (props) => {
             )}
             {values.loading && <i className="fas fa-spinner fa-pulse fa-2x justify-content-center my-5"></i>}
             {!values.loading && values.page.totalElements === 0 && <h3 className="text-muted text-center my-5"><i className="far fa-sticky-note"></i> {t("admin:view.empty")}</h3>}
-            {values.page && values.page.content && values.page.content.map(user =>
-                <div className="d-flex my-3 py-3 px-1 shadow-sm rounded" key={user.id}>
+            {values.page && values.page.content && values.page.content.map(story =>
+                <div className="d-flex my-3 p-1 shadow-sm rounded" key={story.id}>
+                    {story.pictures && <Link to={"/admin/story/" + story.id} className="rounded w-25">
+                        <div className="rounded w-100 h-100"
+                             style={{backgroundImage: "url(/api/story/" + story.id + "/picture/" + (story.pictures.split(',')[0]).replace('.', '_thumbnail.') + ")"}}>
+                        </div>
+                    </Link>}
                     <div className="px-3 w-75">
-                        <p className="text-ellipsis"><Link to={"/admin/user/" + user.id}><i className="far fa-user-circle fa-fw fa-lg"></i> {user.name}</Link></p>
-                        <p className="text-muted">
-                            <i className="far fa-envelope fa-fw fa-lg"></i> {user.email} <br/>
-                            {user.phone && (<> <i className="fas fa-phone" fa-fw fa-lg></i> {user.phone} <br/></>)}
-                            <i className="fas fa-sign-in-alt fa-fw fa-lg"></i> {user.username} <br/>
-                        </p>
+                        <p className="text-ellipsis"><Link to={"/admin/story/" + story.id}>{story.title}</Link></p>
                         <p>
-                            {user.activated ?
-                                <span className="badge bg-success rounded-pill"><i className="fas fa-user-check"></i> {t("verified")}</span>
-                                : <span className="badge bg-secondary rounded-pill"><i className="fas fa-user-slash"></i> {t("notVerified")}</span>
+                            {story.published ?
+                                <span className="badge bg-success rounded-pill"><i className="far fa-eye fa-fw"></i> {t("public")}</span>
+                                : <span className="badge bg-secondary rounded-pill"><i className="far fa-eye-slash fa-fw"></i> {t("private")}</span>
                             }
-                            {user.roles.map(role =>
-                                <span className="badge bg-primary rounded-pill ms-2"><i className="fas fa-user-shield"></i> {role.name}</span>
-                            )}
                         </p>
-                        <small className="text-muted">{user.lastModifiedDate}</small>
+                        <small className="text-muted">{story.lastModifiedDate}</small>
                     </div>
                     <UncontrolledButtonDropdown className="align-self-center ms-auto">
                         <DropdownToggle className="btn-borderless">
                             <i className="fa fa-ellipsis-v fa-fw"></i>
                         </DropdownToggle>
                         <DropdownMenu className="dropdown-menu-end">
-                            <DropdownItem tag={Link} to={"/admin/user/" + user.id}><i className="far fa-edit fa-fw"></i> {t("admin:view.edit")}</DropdownItem>
-                            <DropdownItem onClick={() => modalConfirmOpen(user.id)}>
+                            <DropdownItem tag={Link} to={"/admin/story/" + story.id}><i className="far fa-edit fa-fw"></i> {t("admin:view.edit")}</DropdownItem>
+                            <DropdownItem onClick={() => modalConfirmOpen(story.id)}>
                                 <i className="far fa-trash-alt fa-fw"></i> {t("admin:view.delete")}
                             </DropdownItem>
                         </DropdownMenu>
@@ -287,27 +272,16 @@ const Users = (props) => {
             <Modal isOpen={filter.modal} toggle={modalFilterToggle}>
                 <ModalHeader toggle={modalFilterToggle}>{t("admin:view.filter")}</ModalHeader>
                 <ModalBody>
-                    <div className="form-floating mb-3">
-                        <input type="text" name="username" className="form-control" placeholder={t("username")} value={filter.username} onChange={handleFilterChange}/>
-                        <label htmlFor="username">{t("username")}</label>
-                    </div>
-                    <div className="form-floating mb-3">
-                        <input type="text" name="email" className="form-control" placeholder={t("email")} value={filter.email} onChange={handleFilterChange}/>
-                        <label htmlFor="email">{t("email")}</label>
-                    </div>
-                    <div className="form-floating mb-3">
-                        <input type="text" name="phone" className="form-control" placeholder={t("phone")} value={filter.phone} onChange={handleFilterChange}/>
-                        <label htmlFor="phone">{t("phone")}</label>
-                    </div>
                     <div className="btn-group mb-3" role="group">
-                        <input type="radio" className="btn-check" id="filterActivated" name="activated" value="" checked={filter.activated === ''} onChange={handleFilterChange}/>
-                        <label className="btn btn-outline-primary" htmlFor="filterActivated">{t("admin:view.all")}</label>
-                        <input type="radio" className="btn-check" id="filterVerified" name="activated" value="true" checked={filter.activated === 'true'}
+                        <input type="radio" className="btn-check" id="filterPublishedAll" name="published" value="" checked={filter.published === ''}
                                onChange={handleFilterChange}/>
-                        <label className="btn btn-outline-primary" htmlFor="filterVerified">{t("verified")}</label>
-                        <input type="radio" className="btn-check" id="filterNovVerified" name="activated" value="false" checked={filter.activated === 'false'}
+                        <label className="btn btn-outline-primary" htmlFor="filterPublishedAll">{t("admin:view.all")}</label>
+                        <input type="radio" className="btn-check" id="filterPublic" name="published" value="true" checked={filter.published === 'true'}
                                onChange={handleFilterChange}/>
-                        <label className="btn btn-outline-primary" htmlFor="filterNovVerified">{t("notVerified")}</label>
+                        <label className="btn btn-outline-primary" htmlFor="filterPublic">{t("public")}</label>
+                        <input type="radio" className="btn-check" id="filterPrivate" name="published" value="false" checked={filter.published === 'false'}
+                               onChange={handleFilterChange}/>
+                        <label className="btn btn-outline-primary" htmlFor="filterPrivate">{t("private")}</label>
                     </div>
                 </ModalBody>
                 <ModalFooter>
@@ -320,89 +294,20 @@ const Users = (props) => {
                 <ModalBody>
                     <div className="row mb-3 align-items-center">
                         <div className="col-4 col-sm-3">
-                            <label htmlFor="name" className="col-form-label">{t("name")}</label>
+                            <label htmlFor="title" className="col-form-label">{t("name")}</label>
                         </div>
                         <div className="col-auto">
                             <div className="btn-group" role="group">
-                                <input type="radio" className="btn-check" id="sortName" name="name" value="" checked={sort.name === ''} onChange={handleSortChange}/>
-                                <label className="btn btn-outline-primary" htmlFor="sortName">
+                                <input type="radio" className="btn-check" id="sortTitle" name="title" value="" checked={sort.title === ''} onChange={handleSortChange}/>
+                                <label className="btn btn-outline-primary" htmlFor="sortTitle">
                                     <i className="fas fa-sort fa-fw"></i> <span className="d-none d-sm-inline-block">{t("admin:view.notSorted")}</span>
                                 </label>
-                                <input type="radio" className="btn-check" id="sortNameAsc" name="name" value="asc" checked={sort.name === 'asc'} onChange={handleSortChange}/>
-                                <label className="btn btn-outline-primary" htmlFor="sortNameAsc">
+                                <input type="radio" className="btn-check" id="sortTitleAsc" name="title" value="asc" checked={sort.title === 'asc'} onChange={handleSortChange}/>
+                                <label className="btn btn-outline-primary" htmlFor="sortTitleAsc">
                                     <i className="fas fa-sort-alpha-down fa-fw"></i> <span className="d-none d-sm-inline-block">{t("admin:view.ascending")}</span>
                                 </label>
-                                <input type="radio" className="btn-check" id="sortNameDesc" name="name" value="desc" checked={sort.name === 'desc'} onChange={handleSortChange}/>
-                                <label className="btn btn-outline-primary" htmlFor="sortNameDesc">
-                                    <i className="fas fa-sort-alpha-up fa-fw"></i> <span className="d-none d-sm-inline-block">{t("admin:view.descending")}</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row mb-3 align-items-center">
-                        <div className="col-4 col-sm-3">
-                            <label htmlFor="username" className="col-form-label">{t("username")}</label>
-                        </div>
-                        <div className="col-auto">
-                            <div className="btn-group" role="group">
-                                <input type="radio" className="btn-check" id="sortUsername" name="username" value="" checked={sort.username === ''} onChange={handleSortChange}/>
-                                <label className="btn btn-outline-primary" htmlFor="sortUsername">
-                                    <i className="fas fa-sort fa-fw"></i> <span className="d-none d-sm-inline-block">{t("admin:view.notSorted")}</span>
-                                </label>
-                                <input type="radio" className="btn-check" id="sortUsernameAsc" name="username" value="asc" checked={sort.username === 'asc'}
-                                       onChange={handleSortChange}/>
-                                <label className="btn btn-outline-primary" htmlFor="sortUsernameAsc">
-                                    <i className="fas fa-sort-alpha-down fa-fw"></i> <span className="d-none d-sm-inline-block">{t("admin:view.ascending")}</span>
-                                </label>
-                                <input type="radio" className="btn-check" id="sortUsernameDesc" name="username" value="desc" checked={sort.username === 'desc'}
-                                       onChange={handleSortChange}/>
-                                <label className="btn btn-outline-primary" htmlFor="sortUsernameDesc">
-                                    <i className="fas fa-sort-alpha-up fa-fw"></i> <span className="d-none d-sm-inline-block">{t("admin:view.descending")}</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row mb-3 align-items-center">
-                        <div className="col-4 col-sm-3">
-                            <label htmlFor="email" className="col-form-label">{t("email")}</label>
-                        </div>
-                        <div className="col-auto">
-                            <div className="btn-group" role="group">
-                                <input type="radio" className="btn-check" id="sortEmail" name="email" value="" checked={sort.email === ''} onChange={handleSortChange}/>
-                                <label className="btn btn-outline-primary" htmlFor="sortEmail">
-                                    <i className="fas fa-sort fa-fw"></i> <span className="d-none d-sm-inline-block">{t("admin:view.notSorted")}</span>
-                                </label>
-                                <input type="radio" className="btn-check" id="sortEmailAsc" name="email" value="asc" checked={sort.email === 'asc'}
-                                       onChange={handleSortChange}/>
-                                <label className="btn btn-outline-primary" htmlFor="sortEmailAsc">
-                                    <i className="fas fa-sort-alpha-down fa-fw"></i> <span className="d-none d-sm-inline-block">{t("admin:view.ascending")}</span>
-                                </label>
-                                <input type="radio" className="btn-check" id="sortEmailDesc" name="email" value="desc" checked={sort.email === 'desc'}
-                                       onChange={handleSortChange}/>
-                                <label className="btn btn-outline-primary" htmlFor="sortEmailDesc">
-                                    <i className="fas fa-sort-alpha-up fa-fw"></i> <span className="d-none d-sm-inline-block">{t("admin:view.descending")}</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row mb-3 align-items-center">
-                        <div className="col-4 col-sm-3">
-                            <label htmlFor="phone" className="col-form-label">{t("phone")}</label>
-                        </div>
-                        <div className="col-auto">
-                            <div className="btn-group" role="group">
-                                <input type="radio" className="btn-check" id="sortPhone" name="phone" value="" checked={sort.phone === ''} onChange={handleSortChange}/>
-                                <label className="btn btn-outline-primary" htmlFor="sortPhone">
-                                    <i className="fas fa-sort fa-fw"></i> <span className="d-none d-sm-inline-block">{t("admin:view.notSorted")}</span>
-                                </label>
-                                <input type="radio" className="btn-check" id="sortPhoneAsc" name="phone" value="asc" checked={sort.phone === 'asc'}
-                                       onChange={handleSortChange}/>
-                                <label className="btn btn-outline-primary" htmlFor="sortPhoneAsc">
-                                    <i className="fas fa-sort-alpha-down fa-fw"></i> <span className="d-none d-sm-inline-block">{t("admin:view.ascending")}</span>
-                                </label>
-                                <input type="radio" className="btn-check" id="sortPhoneDesc" name="phone" value="desc" checked={sort.phone === 'desc'}
-                                       onChange={handleSortChange}/>
-                                <label className="btn btn-outline-primary" htmlFor="sortPhoneDesc">
+                                <input type="radio" className="btn-check" id="sortTitleDesc" name="title" value="desc" checked={sort.title === 'desc'} onChange={handleSortChange}/>
+                                <label className="btn btn-outline-primary" htmlFor="sortTitleDesc">
                                     <i className="fas fa-sort-alpha-up fa-fw"></i> <span className="d-none d-sm-inline-block">{t("admin:view.descending")}</span>
                                 </label>
                             </div>
@@ -465,6 +370,6 @@ const Users = (props) => {
             </Modal>
         </>
     );
-};
+}
 
-export default Users;
+export default Stories;

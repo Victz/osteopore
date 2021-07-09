@@ -3,7 +3,6 @@ import {useTranslation} from 'react-i18next';
 import {Link, useHistory, useParams} from "react-router-dom";
 import axios from "axios";
 import Auth from "../module/Auth";
-import {Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
 
 const User = (props) => {
 
@@ -14,7 +13,6 @@ const User = (props) => {
     const [values, setValues] = useState({
         loading: true,
         message: '',
-        modal: false,
         roles: []
     });
 
@@ -24,7 +22,6 @@ const User = (props) => {
         username: '',
         email: '',
         phone: '',
-        password: '',
         activated: false,
         roles: []
     });
@@ -38,9 +35,11 @@ const User = (props) => {
             await axios.get("/api/admin/user/" + id, {headers: Auth.authHeader()}).then((response) => {
                     console.log(response);
                     for (const [name, value] of Object.entries(response.data)) {
-                        setModel((values) => ({
-                            ...values, [name]: value
-                        }));
+                        if (model.hasOwnProperty(name)) {
+                            setModel((values) => ({
+                                ...values, [name]: value
+                            }));
+                        }
                     }
                 }, error => {
                     console.log(error);
@@ -80,7 +79,7 @@ const User = (props) => {
             if (value.trim().length > 1) {
                 event.target.classList.remove("border-danger");
                 event.target.classList.add('border-success');
-                event.target.nextSibling.classList.add("d-none");
+                event.target.nextSibling.nextSibling.classList.add("d-none");
             } else {
                 event.target.classList.remove("border-success");
                 event.target.classList.add('border-danger');
@@ -89,25 +88,7 @@ const User = (props) => {
             if (value.trim() !== "" && patternEmail.test(value.trim())) {
                 event.target.classList.remove("border-danger");
                 event.target.classList.add('border-success');
-                event.target.nextSibling.classList.add("d-none");
-            } else {
-                event.target.classList.remove("border-success");
-                event.target.classList.add('border-danger');
-            }
-        } else if (name === "password") {
-            if (value.trim().length > 7) {
-                event.target.classList.remove("border-danger");
-                event.target.classList.add('border-success');
-                event.target.nextSibling.classList.add("d-none");
-            } else {
-                event.target.classList.remove("border-success");
-                event.target.classList.add('border-danger');
-            }
-        } else if (name === "passwordConfirm") {
-            if (value.trim().length > 7 && value.trim() === model.password) {
-                event.target.classList.remove("border-danger");
-                event.target.classList.add('border-success');
-                event.target.nextSibling.classList.add("d-none");
+                event.target.nextSibling.nextSibling.classList.add("d-none");
             } else {
                 event.target.classList.remove("border-success");
                 event.target.classList.add('border-danger');
@@ -115,68 +96,47 @@ const User = (props) => {
         }
     };
 
-    const modalToggle = () => {
-        setValues((values) => ({
-            ...values, modal: !values.modal
-        }));
-    };
-
-    const modalClass = (role) => {
-        console.log("modalClass");
-        let className = 'nav-link';
-        model.roles.every(selectedRoles => {
-            if (selectedRoles.id === role) {
-                className += " active";
-            }
+    const isChecked = (id) => {
+        let checked = false;
+        model.roles.map(role => {
+            if (role.id === id) checked = true;
         });
-        return className;
-    };
-
-    const handleRoleChange = (role) => {
-        console.log(role);
-        console.log(model.roles);
-        const index = model.roles.indexOf(role);
-        if (index > -1) {
-            model.roles.splice(index, 1);
-        }else{
-            model.roles.push(role);
-        }
-        console.log(model.roles);
+        return checked;
     }
 
-    const modalConfirm = (roles) => {
-        setModel((values) => ({
-            ...values, roles: roles
-        }));
-    };
+    const handleCheckbox = (event) => {
+        event.persist();
+        let value = event.target.value;
+        let index = -1;
+        model.roles.map((role, i) => {
+            if (role.id === value) index = i;
+        });
+        if (index > -1) {
+            model.roles.splice(index, 1);
+        } else {
+            let role = {id: value};
+            model.roles.push(role);
+        }
+    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!(event.target.elements["name"].value.trim().length > 1)) {
-            event.target.elements["name"].nextSibling.classList.remove("d-none");
+            event.target.elements["name"].nextSibling.nextSibling.classList.remove("d-none");
             return false;
         }
         if (!(event.target.elements["email"].value.trim() !== "" && patternEmail.test(event.target.elements["email"].value.trim()))) {
-            event.target.elements["email"].nextSibling.classList.remove("d-none");
-            return false;
-        }
-        if (!(event.target.elements["password"].value.trim().length > 7)) {
-            event.target.elements["password"].nextSibling.classList.remove("d-none");
-            return false;
-        }
-        if (!(event.target.elements["passwordConfirm"].value.trim().length > 7 && event.target.elements["passwordConfirm"].value.trim() === model.password)) {
-            event.target.elements["passwordConfirm"].nextSibling.classList.remove("d-none");
+            event.target.elements["email"].nextSibling.nextSibling.classList.remove("d-none");
             return false;
         }
         setValues((values) => ({
             ...values, loading: true
         }));
 
-        await axios.post("/api/admin/user", model, {headers: Auth.authHeader()})
-            .then((response) => {
+        if (model.id && model.id.trim().length > 0) {
+            await axios.put("/api/admin/user", model, {headers: Auth.authHeader()}).then((response) => {
                     console.log(response);
                     history.push('/admin/users');
-
                 }, error => {
                     console.log(error);
                     setValues((values) => ({
@@ -184,6 +144,18 @@ const User = (props) => {
                     }));
                 }
             );
+        } else {
+            await axios.post("/api/admin/user", model, {headers: Auth.authHeader()}).then((response) => {
+                    console.log(response);
+                    history.push('/admin/users');
+                }, error => {
+                    console.log(error);
+                    setValues((values) => ({
+                        ...values, loading: false, message: error.response.data.message
+                    }));
+                }
+            );
+        }
     }
 
     return (
@@ -194,44 +166,44 @@ const User = (props) => {
                 <li className="breadcrumb-item active"><i className="far fa-edit fa-fw"></i> {t("admin:view.edit")}</li>
             </ol>
             <h1 className="h3 mt-5 text-muted">{t("title")}</h1>
-            <form className="my-5" onSubmit={handleSubmit}>
+            <form className="form-sm my-5" onSubmit={handleSubmit}>
                 {values.message && (
                     <div className="mb-3">
                         <div className="alert alert-danger" role="alert">{values.message}</div>
                     </div>
                 )}
-                <div className="mb-3">
-                    <label htmlFor="name" className="col-form-label">{t("name")}</label>
+                <div className="form-floating mb-3">
                     <input type="text" name="name" className="form-control" placeholder={t("name")}
                            value={model.name} onChange={handleChange} maxLength="50" required autoFocus/>
+                    <label htmlFor="name">{t("name")}</label>
                     <div className="text-danger d-none"><i className='fa fa-exclamation-circle'></i> {t("nameValidate")}</div>
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="email" className="col-form-label">{t("email")}</label>
+                <div className="form-floating mb-3">
+                    <input type="text" name="username" className="form-control" placeholder={t("username")}
+                           value={model.username} onChange={handleChange} maxLength="50" required/>
+                    <label htmlFor="username">{t("username")}</label>
+                    <div className="text-danger d-none"><i className='fa fa-exclamation-circle'></i> {t("usernameValidate")}</div>
+                </div>
+                <div className="form-floating mb-3">
                     <input type="text" name="email" className="form-control" placeholder={t("email")}
-                           autoComplete="off" value={model.email} onChange={handleChange} maxLength="50" required/>
+                           value={model.email} onChange={handleChange} maxLength="50" required/>
+                    <label htmlFor="email">{t("email")}</label>
                     <div className="text-danger d-none"><i className='fa fa-exclamation-circle'></i> {t("emailValidate")}</div>
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="password" className="col-form-label">{t("password")}</label>
-                    <input type="password" name="password" className="form-control" placeholder={t("password")}
-                           value={model.password} onChange={handleChange} required/>
-                    <div className="text-danger d-none"><i className='fa fa-exclamation-circle'></i> {t("passwordValidate")}</div>
+                <div className="form-floating mb-3">
+                    <input type="text" name="phone" className="form-control" placeholder={t("phone")}
+                           value={model.phone} onChange={handleChange} maxLength="50"/>
+                    <label htmlFor="phone">{t("phone")}</label>
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="passwordConfirm" className="col-form-label">{t("passwordConfirm")}</label>
-                    <input type="password" name="passwordConfirm" className="form-control" placeholder={t("passwordConfirm")}
-                           value={model.passwordConfirm} onChange={handleChange} required/>
-                    <div className="text-danger d-none"><i className='fa fa-exclamation-circle'></i> {t("passwordConfirmValidate")}</div>
+                <div className="mt-4 mb-3">
+                    {values.roles.map(role =>
+                        <div className="form-check form-switch" key={role.id}>
+                            <input className="form-check-input" type="checkbox" id={role.id} name="roles" value={role.id}
+                                   onChange={handleCheckbox} defaultChecked={isChecked(role.id)}/>
+                            <label className="form-check-label" htmlFor={role.id}>{role.name}</label>
+                        </div>
+                    )}
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="roles" className="control-label">{t("roles")}</label>
-                    <div className="input-group">
-                        <input type="text" className="form-control" placeholder={t("roles")} aria-label={t("roles")}/>
-                        <button className="btn btn-outline-secondary" type="button" onClick={modalToggle}> {t("admin:view.select")}</button>
-                    </div>
-                </div>
-
                 <div className="col-sm-5 ms-auto mb-3">
                     <div className="d-grid gap-2">
                         <button type="submit" className="btn btn-primary" disabled={values.loading}>
@@ -240,22 +212,6 @@ const User = (props) => {
                     </div>
                 </div>
             </form>
-            <Modal className="modal-sm" isOpen={values.modal} toggle={modalToggle}>
-                <ModalHeader toggle={modalToggle}>{t("roles")}</ModalHeader>
-                <ModalBody>
-                    <nav className="nav nav-tabs flex-column">
-                        {values.roles.map(role =>
-                            <a className={modalClass(role.id)} key={role.id} href="#" onClick={() => handleRoleChange(role)}>
-                                {role.name} <span className="badge bg-primary"><i className="fa fa-check"></i></span>
-                            </a>
-                        )}
-                    </nav>
-                </ModalBody>
-                <ModalFooter>
-                    <button type="button" className="btn btn-outline-secondary" onClick={modalToggle}>{t("admin:view.cancel")}</button>
-                    <button type="button" className="btn btn-primary" onClick={modalConfirm}>{t("admin:view.confirm")}</button>
-                </ModalFooter>
-            </Modal>
         </>
     );
 };

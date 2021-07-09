@@ -2,6 +2,7 @@ package com.osteopore.repository;
 
 import com.osteopore.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -18,6 +19,7 @@ public interface UserRepository extends JpaRepository<User, String>, AbstractRep
      * @param username
      * @return Optional User
      */
+    @Query("SELECT user FROM User user WHERE user.username = :username and user.deleted = false")
     Optional<User> findByUsername(String username);
 
     /**
@@ -26,6 +28,7 @@ public interface UserRepository extends JpaRepository<User, String>, AbstractRep
      * @param email
      * @return Optional User
      */
+    @Query("SELECT user FROM User user WHERE user.email = :email and user.deleted = false")
     Optional<User> findByEmail(String email);
 
     /**
@@ -34,6 +37,7 @@ public interface UserRepository extends JpaRepository<User, String>, AbstractRep
      * @param phone
      * @return Optional User
      */
+    @Query("SELECT user FROM User user WHERE user.phone = :phone and user.deleted = false")
     Optional<User> findByPhone(String phone);
 
     /**

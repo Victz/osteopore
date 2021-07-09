@@ -24,12 +24,14 @@
     "confirm": "确认",
     "cancel": "取消",
     "confirmDeleteTitle": "确认删除？",
+    "all": "全部",
     "notSorted": "无排序",
     "ascending": "正序",
     "descending": "倒序",
     "createdDate": "创建日期",
     "lastModifiedDate": "修改日期",
     "select": "选择",
+    "draft": "草稿",
     "save": "保存"
   }
 }

@@ -8,6 +8,10 @@ import Footer from "./Footer";
 import Admin from "../admin";
 import Users from "../admin/users";
 import User from "../admin/user";
+import Products from "../admin/products";
+import Product from "../admin/product";
+import Story from "../admin/story";
+import Stories from "../admin/stories";
 
 const MainAdmin = (props) => {
 
@@ -81,6 +85,10 @@ const MainAdmin = (props) => {
                             <Route path='/admin' exact component={Admin}/>
                             <Route path='/admin/users/(:path+)?' component={Users}/>
                             <Route path='/admin/user/:id?' component={User}/>
+                            <Route path='/admin/products/(:path+)?' component={Products}/>
+                            <Route path='/admin/product/:id?' component={Product}/>
+                            <Route path='/admin/stories/(:path+)?' component={Stories}/>
+                            <Route path='/admin/story/:id?' component={Story}/>
                         </Switch>
                         <Footer/>
                     </div>

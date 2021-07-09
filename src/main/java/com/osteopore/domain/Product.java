@@ -1,38 +1,46 @@
 package com.osteopore.domain;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 
 /**
- *
  * @author shawn
  */
 @Entity
 @Table(name = "PRODUCT")
-@JsonPropertyOrder(value = {"name", "code", "price"})
+@JsonPropertyOrder(value = {"id", "name", "code", "price", "description", "pictures", "attachments", "sale", "views", "createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate"})
 public class Product extends AbstractEntity {
 
+    @NotBlank(message = "{product.name.validate}")
+    @Size(max = 255, message = "{product.name.validate}")
     @Column(name = "NAME")
     private String name;
 
+    @Size(max = 255)
     @Column(name = "CODE")
     private String code;
 
+    @Digits(integer = 18, fraction = 5)
     @Column(name = "PRICE", precision = 18, scale = 5)
-    @Digits(integer = 13, fraction = 5)
     private BigDecimal price;
 
+    @Size(max = 5000)
     @Column(name = "DESCRIPTION", length = 5000)
     private String description;
 
+    @Size(max = 255)
     @Column(name = "PICTURES")
     private String pictures;
 
-    @Column(name = "ATTACHMENTS", length = 500)
+    @Size(max = 255)
+    @Column(name = "ATTACHMENTS")
     private String attachments;
 
     @Column(name = "SALE")

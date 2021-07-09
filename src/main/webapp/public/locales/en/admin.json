@@ -24,12 +24,14 @@
     "confirm": "Confirm",
     "cancel": "Cancel",
     "confirmDeleteTitle": "Confirm to delete?",
+    "all": "All",
     "notSorted": "Not Sorted",
     "ascending": "Ascending",
     "descending": "Descending",
     "createdDate": "Created Date",
     "lastModifiedDate": "Last Modified",
     "select": "Select",
+    "draft": "Draft",
     "save": "Save"
   }
 }

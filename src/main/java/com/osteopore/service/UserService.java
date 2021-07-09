@@ -2,10 +2,13 @@ package com.osteopore.service;
 
 import com.osteopore.config.ApplicationConfig;
 import com.osteopore.domain.AbstractEntity;
+import com.osteopore.domain.Role;
 import com.osteopore.domain.User;
 import com.osteopore.exception.BadRequestException;
+import com.osteopore.model.LoginModel;
 import com.osteopore.model.PageModel;
 import com.osteopore.model.UserModel;
+import com.osteopore.repository.RoleRepository;
 import com.osteopore.repository.UserRepository;
 import com.osteopore.security.DomainUserDetails;
 import com.osteopore.security.TokenProvider;
@@ -26,9 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +46,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private TokenProvider tokenProvider;
@@ -60,27 +63,17 @@ public class UserService {
 
         if (entity != null) {
             if (entity.isDeleted()) {
-                entity.setDeleted(false);
-                entity.setName(user.getName());
-                entity.setPassword(encryptedPassword);
-                entity.setLocale(LocaleContextHolder.getLocale().getLanguage());
-                userRepository.save(entity);
                 log.debug("Revert deleted User: {}", entity);
-                return entity;
-            } else if (!entity.isActivated()) {
-                entity.setName(user.getName());
-                entity.setPassword(encryptedPassword);
-                entity.setLocale(LocaleContextHolder.getLocale().getLanguage());
-                userRepository.save(entity);
-                log.debug("Re-initialize existing non-activated User: {}", entity);
-                return entity;
+                entity.setDeleted(false);
+                entity.setRoles(new HashSet<>());
             } else {
                 throw new BadRequestException(messageSource.getMessage("user.email.alreadyexist", null, LocaleContextHolder.getLocale()));
             }
+        } else {
+            entity = new User();
+            entity.setId(UUID.randomUUID().toString());
         }
 
-        entity = new User();
-        entity.setId(UUID.randomUUID().toString());
         entity.setName(user.getName());
         entity.setUsername(entity.getId());
         entity.setEmail(user.getEmail().toLowerCase());
@@ -102,9 +95,9 @@ public class UserService {
                 .getMessage("user.activate.validate", null, LocaleContextHolder.getLocale())));
     }
 
-    public UserModel login(UserModel userModel) {
+    public LoginModel login(LoginModel loginModel) {
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userModel.getLogin(), userModel.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginModel.getLogin(), loginModel.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -116,12 +109,12 @@ public class UserService {
         DomainUserDetails userDetails = (DomainUserDetails) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
-        userModel.setName(userDetails.getName());
-        userModel.setLogin(userDetails.getUsername());
-        userModel.setLocale(userDetails.getLocale());
-        userModel.setAccessToken(jwt);
-        userModel.setRoles(roles);
-        return userModel;
+        loginModel.setName(userDetails.getName());
+        loginModel.setLogin(userDetails.getUsername());
+        loginModel.setLocale(userDetails.getLocale());
+        loginModel.setAccessToken(jwt);
+        loginModel.setRoles(roles);
+        return loginModel;
     }
 
     @Transactional(readOnly = true)
@@ -190,7 +183,7 @@ public class UserService {
         }
 
         if (pageModel.getNumber() == 0) pageModel.setNumber(1);
-        if (pageModel.getSize() == 0) pageModel.setSize(applicationConfig.getPageSize());
+        if (pageModel.getSize() == 0) pageModel.setSize(applicationConfig.getPage().getSize());
         if (pageModel.getSort().isEmpty()) pageModel.getSort().put("user.lastModifiedDate", "desc");
 
         pageModel.setTotalElements(userRepository.count("select count(user)" + jpql, params.toArray()));
@@ -302,41 +295,66 @@ public class UserService {
 //                });
 //    }
 
-    public User create(User user) {
+    public User create(UserModel userModel) {
 
-        if (user.getId() != null) {
+        if (StringUtils.isNotBlank(userModel.getId())) {
             throw new BadRequestException(messageSource.getMessage("error.create", null, LocaleContextHolder.getLocale()));
         }
 
-        User entity = userRepository.findByEmail(user.getEmail().toLowerCase()).orElse(null);
+        User entity = userRepository.findByEmail(userModel.getEmail().toLowerCase()).orElse(null);
         if (entity != null) {
             throw new BadRequestException(messageSource.getMessage("user.email.alreadyexist", null, LocaleContextHolder.getLocale()));
         }
 
         entity = new User();
         entity.setId(UUID.randomUUID().toString());
-        entity.setName(user.getName());
-        entity.setUsername(entity.getId());
-        entity.setEmail(user.getEmail().toLowerCase());
-        entity.setPassword(passwordEncoder.encode(user.getPassword()));
-        entity.setActivated(user.isActivated());
+        entity.setName(userModel.getName());
+        entity.setUsername(userModel.getUsername().toLowerCase());
+        entity.setEmail(userModel.getEmail().toLowerCase());
+        entity.setActivated(userModel.getActivated());
+
+        if (userModel.getRoles() != null && !userModel.getRoles().isEmpty()) {
+            List roles = new ArrayList();
+            userModel.getRoles().forEach(selectedRole -> {
+                if (StringUtils.isNotBlank(selectedRole.getId())) {
+                    Optional<Role> role = roleRepository.findById(selectedRole.getId());
+                    if (role.isPresent()) roles.add(role.get());
+                }
+            });
+            entity.setRoles(new HashSet<>(roles));
+        }
+
         return userRepository.save(entity);
     }
 
-    public User update(User user) {
-        if (user.getId() == null) {
+    public User update(UserModel userModel) {
+        if (StringUtils.isBlank(userModel.getId())) {
             throw new BadRequestException(messageSource.getMessage("error.update", null, LocaleContextHolder.getLocale()));
         }
 
-        User entity = userRepository.findById(user.getId()).orElse(null);
+        User entity = userRepository.findById(userModel.getId()).orElse(null);
         if (entity == null) {
             throw new BadRequestException(messageSource.getMessage("error.update", null, LocaleContextHolder.getLocale()));
         }
 
-        entity.setName(user.getName());
-        entity.setEmail(user.getEmail().toLowerCase());
-        entity.setPassword(passwordEncoder.encode(user.getPassword()));
-        entity.setActivated(user.isActivated());
+        entity.setName(userModel.getName());
+        entity.setUsername(userModel.getUsername().toLowerCase());
+        entity.setEmail(userModel.getEmail().toLowerCase());
+        entity.setActivated(userModel.getActivated());
+
+        if (userModel.getRoles() != null && !userModel.getRoles().isEmpty()) {
+            List roles = new ArrayList();
+            userModel.getRoles().forEach(selectedRole -> {
+                if (StringUtils.isNotBlank(selectedRole.getId())) {
+                    Optional<Role> role = roleRepository.findById(selectedRole.getId());
+                    if (role.isPresent()) roles.add(role.get());
+                }
+            });
+            entity.setRoles(new HashSet<>(roles));
+        } else {
+            entity.setRoles(new HashSet<>());
+        }
+
         return userRepository.save(entity);
     }
 //

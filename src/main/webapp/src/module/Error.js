@@ -8,7 +8,7 @@ const Error = (props) => {
             <div className="banner text-light my-3 text-center" style={{backgroundImage: `url(${backgroundImage})`}}>
                 <h3>{props.summary}</h3>
             </div>
-            <form className="my-5">
+            <form className="form-sm my-5">
                 <div className={props.alert} role="alert">
                     <p>{props.details}</p>
                 </div>

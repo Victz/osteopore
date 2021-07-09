@@ -1,0 +1,18 @@
+{
+  "title": "产品管理",
+  "search": "搜索名称...",
+  "name": "名称",
+  "nameValidate": "请提供有效的名称。",
+  "code": "编号",
+  "price": "价格",
+  "priceValidate": "请提供有效的价格",
+  "priceFrom": "价格高于",
+  "priceTo": "价格低于",
+  "description": "描述",
+  "picture": "图片",
+  "uploadValidateLength": "每次最多只可以上传 10 个文件。",
+  "uploadValidateSize": "文件大小超出允许值。",
+  "attachment": "附件",
+  "sale": "出售",
+  "suspend": "暂停"
+}

@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * Spring Data repository for the Story entity.
  */
 @Repository
-public interface StoryRepository extends JpaRepository<Story, String> {
+public interface StoryRepository extends JpaRepository<Story, String>, AbstractRepository<Story> {
 }

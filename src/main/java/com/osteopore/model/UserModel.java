@@ -1,9 +1,10 @@
 package com.osteopore.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.osteopore.domain.Role;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -12,22 +13,37 @@ import java.util.List;
  */
 public class UserModel {
 
+    private String id;
+
+    @NotBlank(message = "{user.name.validate}")
+    @Size(min = 2, max = 50, message = "{user.name.validate}")
     private String name;
 
-    @NotBlank(message = "{user.login.validate}")
-    private String login;
+    @NotBlank(message = "{user.username.validate}")
+    @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*$", message = "{user.username.validate}")
+    @Size(min = 2, max = 50, message = "{user.username.validate}")
+    private String username;
 
-    @NotBlank(message = "{user.password.validate}")
-    @Size(min = 8, max = 255, message = "{user.password.validate}")
-    private String password;
+    @NotBlank(message = "{user.email.validate}")
+    @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "{user.email.validate}")
+    @Column(name = "EMAIL", length = 50, unique = true)
+    private String email;
 
-    private Boolean rememberme;
+    @Pattern(regexp = "^\\+[0-9]+$", message = "{user.phone.validate}")
+    @Size(min = 2, max = 50, message = "{user.phone.validate}")
+    private String phone;
 
-    private String accessToken;
+    private Boolean activated;
 
-    private List<String> roles;
+    private List<Role> roles;
 
-    private String locale;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -37,53 +53,43 @@ public class UserModel {
         this.name = name;
     }
 
-    public String getLogin() {
-        return login;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    @JsonIgnore
-    public String getPassword() {
-        return password;
+    public String getEmail() {
+        return email;
     }
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    public void setPassword(String password) {
-        this.password = password;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public Boolean getRememberme() {
-        return rememberme;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setRememberme(Boolean rememberme) {
-        this.rememberme = rememberme;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getAccessToken() {
-        return accessToken;
+    public Boolean getActivated() {
+        return activated;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public void setActivated(Boolean activated) {
+        this.activated = activated;
     }
 
-    public List<String> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
     }
 }

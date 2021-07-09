@@ -45,15 +45,15 @@ public class User extends AbstractEntity {
 
     @NotBlank(message = "{user.password.validate}")
     @Size(min = 8, max = 255, message = "{user.password.validate}")
-    @Column(name = "PASSWORD", length = 255)
+    @Column(name = "PASSWORD")
     private String password;
 
     @Size(max = 255)
-    @Column(name = "PHOTO", length = 255)
+    @Column(name = "PHOTO")
     private String photo;
 
     @Size(max = 255)
-    @Column(name = "COVER", length = 255)
+    @Column(name = "COVER")
     private String cover;
 
     @Size(min = 2, max = 10)
@@ -66,12 +66,12 @@ public class User extends AbstractEntity {
 
     @JsonIgnore
     @Size(max = 255)
-    @Column(name = "ACTIVATION_KEY", length = 255)
+    @Column(name = "ACTIVATION_KEY")
     private String activationKey;
 
     @JsonIgnore
     @Size(max = 255)
-    @Column(name = "RESET_KEY", length = 255)
+    @Column(name = "RESET_KEY")
     private String resetKey;
 
     @JsonIgnore
@@ -150,7 +150,7 @@ public class User extends AbstractEntity {
         this.locale = locale;
     }
 
-    public Boolean isActivated() {
+    public Boolean getActivated() {
         return activated;
     }
 

@@ -2,6 +2,7 @@ package com.osteopore.controller;
 
 import com.osteopore.domain.User;
 import com.osteopore.model.PageModel;
+import com.osteopore.model.UserModel;
 import com.osteopore.repository.UserRepository;
 import com.osteopore.service.UserService;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -70,28 +72,28 @@ public class UserController {
     /**
      * {@code POST  /admin/user} : Create a new user.
      *
-     * @param user the user to create.
+     * @param userModel the user to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new user, or with status {@code 400 (Bad Request)} if the user has already an ID.
      */
     @PostMapping("/admin/user")
-    public ResponseEntity<User> create(@RequestBody User user) {
-        log.debug("REST request to create User : {}", user);
-        User entity = userService.create(user);
+    public ResponseEntity<User> create(@Valid @RequestBody UserModel userModel) {
+        log.debug("REST request to create User : {}", userModel);
+        User entity = userService.create(userModel);
         return ResponseEntity.ok().body(entity);
     }
 
     /**
      * {@code PUT  /admin/user} : Updates an existing user.
      *
-     * @param user the user to update.
+     * @param userModel the user to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated user,
      * or with status {@code 400 (Bad Request)} if the user is not valid,
      * or with status {@code 500 (Internal Server Error)} if the user couldn't be updated.
      */
     @PutMapping("/admin/user")
-    public ResponseEntity<User> update(@RequestBody User user) {
-        log.debug("REST request to update User : {}", user);
-        User entity = userService.update(user);
+    public ResponseEntity<User> update(@Valid @RequestBody UserModel userModel) {
+        log.debug("REST request to update User : {}", userModel);
+        User entity = userService.update(userModel);
         return ResponseEntity.ok().body(entity);
     }
 

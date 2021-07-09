@@ -6,15 +6,9 @@
   "email": "邮箱",
   "emailValidate": "请提供有效邮箱地址。",
   "username": "用户名",
+  "usernameValidate": "请提供有效的用户名。",
   "phone": "手机",
-  "password": "密码",
-  "passwordHelp": "您的密码长度需为8-20位，包含字母，数字和特殊字符，并且不可以包含空格或表情。",
-  "passwordValidate": "请提供有效的密码。",
-  "passwordConfirm": "确认密码",
-  "passwordConfirmValidate": "两次输入的密码不匹配。",
-  "all": "全部",
   "verified": "已验证",
   "notVerified": "未验证",
-  "roles": "角色",
-  "save": "保存"
+  "roles": "角色"
 }

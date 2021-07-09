@@ -1,5 +1,6 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './app.scss';
+import 'react-image-lightbox/style.css';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import Main from "./layout/Main";
 import React from "react";

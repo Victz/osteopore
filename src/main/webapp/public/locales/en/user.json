@@ -6,15 +6,9 @@
   "email": "Email",
   "emailValidate": "Please provide valid email address.",
   "username": "Username",
+  "usernameValidate": "Please provide valid username.",
   "phone": "Phone",
-  "password": "Password",
-  "passwordHelp": "Your password must be 8-20 characters long, contain letters, numbers or special characters, and must not contain spaces or emoji.",
-  "passwordValidate": "Please provide valid password.",
-  "passwordConfirm": "Confirm Password",
-  "passwordConfirmValidate": "Password does not match.",
-  "all": "All",
   "verified": "Verified",
   "notVerified": "Not Verified",
-  "roles": "Roles",
-  "save": "Save"
+  "roles": "Roles"
 }

@@ -1,7 +1,7 @@
 package com.osteopore.controller;
 
 import com.osteopore.domain.User;
-import com.osteopore.model.UserModel;
+import com.osteopore.model.LoginModel;
 import com.osteopore.service.MailService;
 import com.osteopore.service.UserService;
 import org.slf4j.Logger;
@@ -52,12 +52,12 @@ public class AccountController {
     /**
      * User Login
      *
-     * @param userModel
-     * @return UserModel with JWT Token
+     * @param loginModel
+     * @return LoginModel with JWT Token
      */
     @PostMapping("/login")
-    public UserModel login(@Valid @RequestBody UserModel userModel) {
-        return userService.login(userModel);
+    public LoginModel login(@Valid @RequestBody LoginModel loginModel) {
+        return userService.login(loginModel);
     }
 //
 //    /**
