@@ -1,0 +1,13 @@
+{
+  "title": "库存管理",
+  "search": "搜索序列号...",
+  "product": "产品",
+  "serialNumber": "序列号",
+  "serialNumberValidate": "请提供有效的序列号。",
+  "manufacturingDate": "生产日期",
+  "expirationDate": "有效日期",
+  "remark": "备注",
+  "status": "状态",
+  "orderReference": "订单号",
+  "owner": "拥有人"
+}

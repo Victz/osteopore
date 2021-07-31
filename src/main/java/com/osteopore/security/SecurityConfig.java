@@ -44,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/locales/**")
                 .antMatchers("/h2-console/**")
                 .antMatchers("/swagger-ui/index.html")
-                .antMatchers("/test/**");
+                .antMatchers("/v3/api-docs/**");
     }
 
     @Override

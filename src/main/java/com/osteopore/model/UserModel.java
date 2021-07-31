@@ -1,7 +1,5 @@
 package com.osteopore.model;
 
-import com.osteopore.domain.Role;
-
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -35,7 +33,7 @@ public class UserModel {
 
     private Boolean activated;
 
-    private List<Role> roles;
+    private List<String> roles;
 
     public String getId() {
         return id;
@@ -85,11 +83,11 @@ public class UserModel {
         this.activated = activated;
     }
 
-    public List<Role> getRoles() {
+    public List<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 }

@@ -314,10 +314,10 @@ public class UserService {
         entity.setActivated(userModel.getActivated());
 
         if (userModel.getRoles() != null && !userModel.getRoles().isEmpty()) {
-            List roles = new ArrayList();
-            userModel.getRoles().forEach(selectedRole -> {
-                if (StringUtils.isNotBlank(selectedRole.getId())) {
-                    Optional<Role> role = roleRepository.findById(selectedRole.getId());
+            List<Role> roles = new ArrayList();
+            userModel.getRoles().forEach(roleId -> {
+                if (StringUtils.isNotBlank(roleId)) {
+                    Optional<Role> role = roleRepository.findById(roleId);
                     if (role.isPresent()) roles.add(role.get());
                 }
             });
@@ -343,10 +343,10 @@ public class UserService {
         entity.setActivated(userModel.getActivated());
 
         if (userModel.getRoles() != null && !userModel.getRoles().isEmpty()) {
-            List roles = new ArrayList();
-            userModel.getRoles().forEach(selectedRole -> {
-                if (StringUtils.isNotBlank(selectedRole.getId())) {
-                    Optional<Role> role = roleRepository.findById(selectedRole.getId());
+            List<Role> roles = new ArrayList();
+            userModel.getRoles().forEach(roleId -> {
+                if (StringUtils.isNotBlank(roleId)) {
+                    Optional<Role> role = roleRepository.findById(roleId);
                     if (role.isPresent()) roles.add(role.get());
                 }
             });

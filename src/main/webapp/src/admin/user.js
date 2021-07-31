@@ -27,15 +27,17 @@ const User = (props) => {
     });
 
     useEffect(() => {
-        load();
-    }, []);
-
-    const load = async () => {
         if (id) {
-            await axios.get("/api/admin/user/" + id, {headers: Auth.authHeader()}).then((response) => {
+            axios.get("/api/admin/user/" + id, {headers: Auth.authHeader()}).then((response) => {
                     console.log(response);
                     for (const [name, value] of Object.entries(response.data)) {
-                        if (model.hasOwnProperty(name)) {
+                        if (name === 'roles') {
+                            value.map(role => {
+                                setModel((values) => ({
+                                    ...values, roles: [...model.roles, role.id]
+                                }));
+                            });
+                        } else if (model.hasOwnProperty(name)) {
                             setModel((values) => ({
                                 ...values, [name]: value
                             }));
@@ -50,11 +52,20 @@ const User = (props) => {
                 }
             );
         }
-        await axios.get("/api/admin/roles", {headers: Auth.authHeader()}).then((response) => {
+        loadRoles('');
+        setValues((values) => ({
+            ...values, loading: false
+        }));
+    }, []);
+
+    const loadRoles = async (params) => {
+        axios.get("/api/admin/roles" + params, {headers: Auth.authHeader()}).then((response) => {
                 console.log(response);
-                setValues((values) => ({
-                    ...values, roles: response.data
-                }));
+                response.data.map(role => {
+                    setValues((values) => ({
+                        ...values, roles: [...values.roles, {id: role.id, name: role.name}]
+                    }));
+                });
             }, error => {
                 console.log(error);
                 setValues((values) => ({
@@ -62,9 +73,6 @@ const User = (props) => {
                 }));
             }
         );
-        setValues((values) => ({
-            ...values, loading: false
-        }));
     };
 
     const patternEmail = /^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$/;
@@ -96,27 +104,29 @@ const User = (props) => {
         }
     };
 
-    const isChecked = (id) => {
+    const isChecked = (role) => {
+        console.log('ischecked: ' + role);
         let checked = false;
-        model.roles.map(role => {
-            if (role.id === id) checked = true;
+        model.roles.map(selectedRole => {
+            if (selectedRole === role) checked = true;
         });
         return checked;
     }
 
     const handleCheckbox = (event) => {
         event.persist();
-        let value = event.target.value;
-        let index = -1;
-        model.roles.map((role, i) => {
-            if (role.id === value) index = i;
-        });
+        let role = event.target.value;
+        let index = model.roles.findIndex((element) => element === role);
+        // model.roles.map((selectedRole, i) => {
+        //     if (selectedRole === role) index = i;
+        // });
+        console.log('index: ' + index);
         if (index > -1) {
             model.roles.splice(index, 1);
         } else {
-            let role = {id: value};
             model.roles.push(role);
         }
+        console.log('model.roles: ' + model.roles.join());
     }
 
     const handleSubmit = async (event) => {
@@ -134,7 +144,7 @@ const User = (props) => {
         }));
 
         if (model.id && model.id.trim().length > 0) {
-            await axios.put("/api/admin/user", model, {headers: Auth.authHeader()}).then((response) => {
+            await axios.put("/api/admin/user", model, {headers:Auth.authHeader()}).then((response) => {
                     console.log(response);
                     history.push('/admin/users');
                 }, error => {

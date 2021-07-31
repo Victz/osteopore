@@ -31,9 +31,13 @@ spring:
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
+#  jackson:
+#    deserialization:
+#      FAIL_ON_UNKNOWN_PROPERTIES: false
+#      READ_UNKNOWN_ENUM_VALUES_AS_NULL: true
   jpa:
     # open-in-view: false
-    show-sql: true
+    # show-sql: true
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
       hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
@@ -49,7 +53,7 @@ spring:
       hibernate.query.fail_on_pagination_over_collection_fetch: true
       hibernate.query.in_clause_parameter_padding: true
       hibernate.ddl-auto: none
-      hibernate.format_sql: true
+      # hibernate.format_sql: true
   messages:
     basename: locales/messages
     defaultEncoding: UTF-8
@@ -62,6 +66,14 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 1GB
+#springdoc:
+#  api-docs:
+#    path: /v3/api-docs
+#  swagger-ui:
+#    path: /swagger-ui.html
+#    configUrl: /v3/api-docs/swagger-config
+#    layout: BaseLayout
+    disable-swagger-default-url: true
 application:
   token:
     issuer: ${spring.application.name}

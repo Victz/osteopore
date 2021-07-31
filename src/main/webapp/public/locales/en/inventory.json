@@ -1,0 +1,13 @@
+{
+  "title": "Inventory Management",
+  "search": "Search Serial Number...",
+  "product": "Product",
+  "serialNumber": "Serial Number",
+  "serialNumberValidate": "Please provide valid serial number.",
+  "manufacturingDate": "Manufacturing Date",
+  "expirationDate": "Expiration Date",
+  "remark": "Remark",
+  "status": "Status",
+  "orderReference": "Order Reference",
+  "owner": "Owner"
+}

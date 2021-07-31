@@ -1,0 +1,9 @@
+{
+  "title": "Case Management",
+  "search": "Search name...",
+  "name": "Name",
+  "nameValidate": "Please provide valid name.",
+  "number": "Number",
+  "description": "Description",
+  "remark": "Remark"
+}

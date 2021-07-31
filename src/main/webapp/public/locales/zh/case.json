@@ -1,0 +1,9 @@
+{
+  "title": "病例管理",
+  "search": "搜索名称...",
+  "name": "名称",
+  "nameValidate": "请提供有效的名称。",
+  "number": "编号",
+  "description": "描述",
+  "remark": "备注"
+}

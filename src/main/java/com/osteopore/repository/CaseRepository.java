@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * Spring Data repository for the Cases entity.
  */
 @Repository
-public interface CaseRepository extends JpaRepository<Case, String> {
+public interface CaseRepository extends JpaRepository<Case, String>, AbstractRepository<Case> {
 }

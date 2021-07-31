@@ -34,6 +34,7 @@ dependencies {
     implementation "org.apache.commons:commons-lang3"
     implementation "io.jsonwebtoken:jjwt-api:${jsonwebtoken_version}"
     implementation "org.mapstruct:mapstruct:${mapstruct_version}"
+    implementation "org.springdoc:springdoc-openapi-ui:${openapi_version}"
     compileOnly "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     annotationProcessor "org.projectlombok:lombok"

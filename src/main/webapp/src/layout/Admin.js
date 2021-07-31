@@ -12,6 +12,10 @@ import Products from "../admin/products";
 import Product from "../admin/product";
 import Story from "../admin/story";
 import Stories from "../admin/stories";
+import Cases from "../admin/cases";
+import Case from "../admin/case";
+import Inventories from "../admin/inventories";
+import Inventory from "../admin/inventory";
 
 const MainAdmin = (props) => {
 
@@ -89,6 +93,10 @@ const MainAdmin = (props) => {
                             <Route path='/admin/product/:id?' component={Product}/>
                             <Route path='/admin/stories/(:path+)?' component={Stories}/>
                             <Route path='/admin/story/:id?' component={Story}/>
+                            <Route path='/admin/cases/(:path+)?' component={Cases}/>
+                            <Route path='/admin/case/:id?' component={Case}/>
+                            <Route path='/admin/inventories/(:path+)?' component={Inventories}/>
+                            <Route path='/admin/inventory/:id?' component={Inventory}/>
                         </Switch>
                         <Footer/>
                     </div>
