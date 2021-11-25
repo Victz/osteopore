@@ -26,9 +26,9 @@ const User = (props) => {
         roles: []
     });
 
-    useEffect(() => {
+    useEffect(async () => {
         if (id) {
-            axios.get("/api/admin/user/" + id, {headers: Auth.authHeader()}).then((response) => {
+            await axios.get("/api/admin/user/" + id, {headers: Auth.authHeader()}).then((response) => {
                     console.log(response);
                     for (const [name, value] of Object.entries(response.data)) {
                         if (name === 'roles') {
@@ -52,18 +52,11 @@ const User = (props) => {
                 }
             );
         }
-        loadRoles('');
-        setValues((values) => ({
-            ...values, loading: false
-        }));
-    }, []);
-
-    const loadRoles = async (params) => {
-        axios.get("/api/admin/roles" + params, {headers: Auth.authHeader()}).then((response) => {
+        await axios.get("/api/admin/roles", {headers: Auth.authHeader()}).then((response) => {
                 console.log(response);
                 response.data.map(role => {
                     setValues((values) => ({
-                        ...values, roles: [...values.roles, {id: role.id, name: role.name}]
+                        ...values, roles: [...values.roles, {id: role.id, name: role.name}], loading: false
                     }));
                 });
             }, error => {
@@ -72,8 +65,8 @@ const User = (props) => {
                     ...values, loading: false, message: error.response.data.message
                 }));
             }
-        );
-    };
+        )
+    }, []);
 
     const patternEmail = /^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$/;
     const handleChange = (event) => {
@@ -144,7 +137,7 @@ const User = (props) => {
         }));
 
         if (model.id && model.id.trim().length > 0) {
-            await axios.put("/api/admin/user", model, {headers:Auth.authHeader()}).then((response) => {
+            await axios.put("/api/admin/user", model, {headers: Auth.authHeader()}).then((response) => {
                     console.log(response);
                     history.push('/admin/users');
                 }, error => {

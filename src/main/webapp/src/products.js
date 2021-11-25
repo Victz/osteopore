@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useHistory, useLocation} from 'react-router-dom';
 import {useTranslation} from "react-i18next";
-import Auth from "../module/Auth";
-import Utils from "../module/Utils";
+import Auth from "./module/Auth";
+import Utils from "./module/Utils";
 import axios from "axios";
-import {DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody, ModalFooter, ModalHeader, UncontrolledButtonDropdown} from "reactstrap";
+import {Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
+import NumberFormat from 'react-number-format';
+import backgroundImage from "./img/bg.jpg";
 
 const Products = (props) => {
 
-    const {t, i18n} = useTranslation('product', 'admin');
+    const {t, i18n} = useTranslation('product', 'translation');
     const location = useLocation();
     const history = useHistory();
 
@@ -173,24 +175,16 @@ const Products = (props) => {
     };
 
     return (
-        <>
-            <ol className="breadcrumb mt-3 p-2 rounded-start">
-                <li className="breadcrumb-item"><Link to="/admin"><i className="fas fa-tachometer-alt fa-lg fa-fw"></i> {t("admin:nav.dashboard")}</Link></li>
-                <li className="breadcrumb-item active"><i className="fas fa-boxes fa-lg fa-fw"></i> {t("admin:nav.product")}</li>
-            </ol>
-            <h1 className="h3 mt-5 text-muted">{t("title")}</h1>
+        <div className="container py-5">
+            <div className="banner text-light my-3 text-center" style={{backgroundImage: `url(${backgroundImage})`}}>
+                <h3>{t("translation:nav.product")}</h3>
+            </div>
             <div className="btn-toolbar mt-5 justify-content-end" role="toolbar">
-                <Link className="btn btn-primary btn-sm shadow ms-2" to="/admin/product">
-                    <i className="fas fa-plus fa-fw"> </i><span className="d-none d-sm-inline-block">{t("admin:view.new")}</span>
-                </Link>
                 <button type="button" className="btn btn-borderless btn-sm shadow ms-2" onClick={modalFilterToggle}>
-                    <i className="fas fa-filter"></i> <span className="d-none d-sm-inline-block">{t("admin:view.filter")}</span>
+                    <i className="fas fa-filter"></i> <span className="d-none d-sm-inline-block">{t("translation:view.filter")}</span>
                 </button>
                 <button type="button" className="btn btn-borderless btn-sm shadow ms-2" onClick={modalSortToggle}>
-                    <i className="fas fa-sort-alpha-down"></i> <span className="d-none d-sm-inline-block">{t("admin:view.sort")}</span>
-                </button>
-                <button type="button" className="btn btn-borderless btn-sm shadow ms-2">
-                    <i className="fas fa-file-export fa-fw"></i> <span className="d-none d-sm-inline-block">{t("admin:view.export")}</span>
+                    <i className="fas fa-sort-alpha-down"></i> <span className="d-none d-sm-inline-block">{t("translation:view.sort")}</span>
                 </button>
             </div>
             <div className="search rounded-start mt-3">
@@ -203,38 +197,25 @@ const Products = (props) => {
                 </div>
             )}
             {values.loading && <i className="fas fa-spinner fa-pulse fa-2x justify-content-center my-5"></i>}
-            {!values.loading && values.page.totalElements === 0 && <h3 className="text-muted text-center my-5"><i className="far fa-sticky-note"></i> {t("admin:view.empty")}</h3>}
+            {!values.loading && values.page.totalElements === 0 &&
+            <h3 className="text-muted text-center my-5"><i className="far fa-sticky-note"></i> {t("translation:view.empty")}</h3>}
             {values.page && values.page.content && values.page.content.map(product =>
                 <div className="d-flex my-3 p-1 shadow-sm rounded" key={product.id}>
-                    {product.pictures && <Link to={"/admin/product/" + product.id} className="rounded w-25">
+                    {product.pictures && <Link to={"/product/" + product.id} className="rounded w-25">
                         <div className="rounded w-100 h-100"
-                             style={{backgroundImage: "url(/api/product/" + product.id + "/picture/" + (product.pictures.split(',')[0]).replace('.', '_thumbnail.') + ")"}}>
+                             style={{backgroundImage: "url(/api/product/" + product.id + "/picture/" + (product.pictures.split(',')[0]).replace('.', '_thumbnail.') + ")", backgroundSize: "cover"}}>
                         </div>
                     </Link>}
                     <div className="px-3 w-75">
-                        <p className="text-ellipsis"><Link to={"/admin/product/" + product.id}>{product.name}</Link></p>
+                        <p className="text-ellipsis"><Link to={"/product/" + product.id}>{product.name}</Link></p>
                         <p className="text-muted">
                             {product.code}
                         </p>
-                        <p>
-                            {product.sale ?
-                                <span className="badge bg-success rounded-pill"><i className="fas fa-hand-holding-usd fa-fw"></i> {t("sale")}</span>
-                                : <span className="badge bg-secondary rounded-pill"><i className="fas fa-pause fa-fw"></i> {t("suspend")}</span>
-                            }
+                        <p className="text-primary">
+                            <NumberFormat value={product.price} displayType={'text'} thousandSeparator={true} prefix={'$'}/>
                         </p>
-                        <small className="text-muted">{product.lastModifiedDate}</small>
+                        <button type="button" className="btn btn-borderless align-self-center ml-auto"><i className="fas fa-cart-arrow-down fa-fw text-primary"></i></button>
                     </div>
-                    <UncontrolledButtonDropdown className="align-self-center ms-auto">
-                        <DropdownToggle className="btn-borderless">
-                            <i className="fa fa-ellipsis-v fa-fw"></i>
-                        </DropdownToggle>
-                        <DropdownMenu className="dropdown-menu-end">
-                            <DropdownItem tag={Link} to={"/admin/product/" + product.id}><i className="far fa-edit fa-fw"></i> {t("admin:view.edit")}</DropdownItem>
-                            <DropdownItem onClick={() => modalConfirmOpen(product.id)}>
-                                <i className="far fa-trash-alt fa-fw"></i> {t("admin:view.delete")}
-                            </DropdownItem>
-                        </DropdownMenu>
-                    </UncontrolledButtonDropdown>
                 </div>
             )}
 
@@ -274,14 +255,6 @@ const Products = (props) => {
                     </ul>
                 </nav>
             </>}
-            <Modal className="modal-sm" isOpen={values.modal} toggle={modalConfirmToggle}>
-                <ModalHeader toggle={modalConfirmToggle}>{t("admin:view.confirm")}</ModalHeader>
-                <ModalBody>{t("admin:view.confirmDeleteTitle")}</ModalBody>
-                <ModalFooter>
-                    <button type="button" className="btn btn-outline-secondary" onClick={modalConfirmToggle}>{t("admin:view.cancel")}</button>
-                    <button type="button" className="btn btn-primary" onClick={() => modalConfirmDelete(values.id)}>{t("admin:view.confirm")}</button>
-                </ModalFooter>
-            </Modal>
             <Modal isOpen={filter.modal} toggle={modalFilterToggle}>
                 <ModalHeader toggle={modalFilterToggle}>{t("admin:view.filter")}</ModalHeader>
                 <ModalBody>
@@ -438,7 +411,7 @@ const Products = (props) => {
                     <button type="button" className="btn btn-primary" onClick={handleSort}>{t("admin:view.confirm")}</button>
                 </ModalFooter>
             </Modal>
-        </>
+        </div>
     );
 };
 

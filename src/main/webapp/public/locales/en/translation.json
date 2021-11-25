@@ -20,5 +20,17 @@
     "403": "You are not authorized to access this page.",
     "404": "The page does not exist.",
     "500": "Internal server error."
+  },
+  "view": {
+    "filter": "Filter",
+    "sort": "Sort",
+    "empty": "Empty",
+    "all": "All",
+    "notSorted": "Not Sorted",
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "createdDate": "Created Date",
+    "lastModifiedDate": "Last Modified",
+    "select": "Select"
   }
 }

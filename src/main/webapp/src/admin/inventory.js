@@ -5,6 +5,7 @@ import axios from "axios";
 import Auth from "../module/Auth";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import moment from 'moment';
 
 const Inventory = (props) => {
 
@@ -37,9 +38,14 @@ const Inventory = (props) => {
                 .then((response) => {
                         console.log(response);
                         for (const [name, value] of Object.entries(response.data)) {
+                            if (!value) continue;
                             if (name === 'product') {
                                 setModel((values) => ({
                                     ...values, product: value.id
+                                }));
+                            } else if (name === 'manufacturingDate' || name === 'expirationDate') {
+                                setModel((values) => ({
+                                    ...values, [name]: moment(value).toDate()
                                 }));
                             } else if (model.hasOwnProperty(name)) {
                                 setModel((values) => ({
@@ -173,11 +179,11 @@ const Inventory = (props) => {
                 </div>
                 <div className="mb-3">
                     <DatePicker name="manufacturingDate" className="form-control" placeholderText={t("manufacturingDate")} selected={model.manufacturingDate}
-                                isClearable onChange={(date) => setModel((values) => ({...values, manufacturingDate: date}))}/>
+                                dateFormat="yyyy-MM-dd" isClearable onChange={(date) => setModel((values) => ({...values, manufacturingDate: date}))}/>
                 </div>
                 <div className="mb-3">
                     <DatePicker name="expirationDate" className="form-control" placeholderText={t("expirationDate")} selected={model.expirationDate}
-                                isClearable onChange={(date) => setModel((values) => ({...values, expirationDate: date}))}/>
+                                dateFormat="yyyy-MM-dd" isClearable onChange={(date) => setModel((values) => ({...values, expirationDate: date}))}/>
                 </div>
                 <div className="form-floating mb-3">
                     <select name="status" className="form-select mb-3" onChange={handleChange} value={model.status}>

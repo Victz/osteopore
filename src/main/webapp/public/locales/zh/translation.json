@@ -20,5 +20,17 @@
     "403": "您没有权限访问此页面.",
     "404": "该页面不存在.",
     "500": "内部服务器错误."
+  },
+  "view": {
+    "filter": "筛选",
+    "sort": "排序",
+    "empty": "无记录",
+    "all": "全部",
+    "notSorted": "无排序",
+    "ascending": "正序",
+    "descending": "倒序",
+    "createdDate": "创建日期",
+    "lastModifiedDate": "修改日期",
+    "select": "选择"
   }
 }

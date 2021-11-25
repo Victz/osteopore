@@ -1,5 +1,7 @@
 package com.osteopore.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -12,6 +14,7 @@ public class InventoryModel {
     @Size(min = 36, message = "{inventory.product.validate}")
     private String product;
 
+    @Schema
     @NotBlank(message = "{inventory.serialNumber.validate}")
     private String serialNumber;
 

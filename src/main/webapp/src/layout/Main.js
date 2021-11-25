@@ -12,6 +12,9 @@ import Register from "../Register";
 import Login from "../Login";
 import Activate from "../Activate";
 import Search from "../Search";
+import Products from "../products";
+import Contact from "../Contact";
+import Product from "../product";
 
 const Main = (props) => {
 
@@ -163,7 +166,7 @@ const Main = (props) => {
                     </nav>
                     <nav className="nav nav-underline nav-fill nav-justified shadow-sm">
                         <Link className={"nav-item nav-link" + (location.pathname === "/" || location.pathname === "/index" ? " active" : "")} to="/">{t("nav.home")}</Link>
-                        <NavLink className="nav-item nav-link" activeClassName="active" to="/product">{t("nav.product")}</NavLink>
+                        <NavLink className="nav-item nav-link" activeClassName="active" to="/products">{t("nav.product")}</NavLink>
                         <NavLink className="nav-item nav-link" activeClassName="active" to="/story">{t("nav.story")}</NavLink>
                         <NavLink className="nav-item nav-link" activeClassName="active" to="/contact">{t("nav.contactus")}</NavLink>
                     </nav>
@@ -181,6 +184,9 @@ const Main = (props) => {
                         <Route path='/info' exact component={Info}/>
                         <Route path='/activate/:key' exact component={Activate}/>
                         <Route path='/login' exact component={Login}/>
+                        <Route path='/products/(:path+)?' component={Products}/>
+                        <Route path='/product/:id?' component={Product}/>
+                        <Route path='/contact' component={Contact}/>
                         <Route path="*"><Error alert="alert alert-danger" summary={t("error.title")} details={t("error.404")}/></Route>
                     </Switch>
                     <Footer/>
@@ -188,7 +194,7 @@ const Main = (props) => {
             </div>
             <nav className="outer-nav left vertical">
                 <Link className={"nav-item nav-link" + (location.pathname === "/" || location.pathname === "/index" ? " active" : "")} to="/">{t("nav.home")}</Link>
-                <NavLink className="nav-item nav-link" activeClassName="active" to="/product">{t("nav.product")}</NavLink>
+                <NavLink className="nav-item nav-link" activeClassName="active" to="/products">{t("nav.product")}</NavLink>
                 <NavLink className="nav-item nav-link" activeClassName="active" to="/story">{t("nav.story")}</NavLink>
                 <NavLink className="nav-item nav-link" activeClassName="active" to="/contact">{t("nav.contactus")}</NavLink>
             </nav>

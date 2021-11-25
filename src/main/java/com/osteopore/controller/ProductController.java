@@ -158,4 +158,29 @@ public class ProductController {
         return ResponseEntity.ok().body(entity);
     }
 
+    /**
+     * {@code GET  /products} : get all selling products.
+     */
+    @GetMapping("/products/**")
+    public PageModel<Product> listSaleProducts(HttpServletRequest request) {
+
+        String path = request.getRequestURI().substring("/api/products".length());
+        log.debug("REST request to get all products. Path: " + path);
+        return productService.listSaleProducts(path);
+    }
+
+    /**
+     * {@code GET  /product/:id} : get the "id" product.
+     *
+     * @param id the id of the product to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the product, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/product/{id}")
+    public ResponseEntity<Product> detailsSaleProduct(@PathVariable String id) {
+        log.debug("REST request to get Product: {}", id);
+        Optional<Product> product = productRepository.findById(id);
+        return product.map(entity -> ResponseEntity.ok().body(entity))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
 }

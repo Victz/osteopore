@@ -298,6 +298,88 @@ public class ProductService {
         return entity;
     }
 
+    @Transactional(readOnly = true)
+    public PageModel<Product> listSaleProducts(String path) {
+
+        PageModel<Product> pageModel = new PageModel<>();
+
+        StringBuilder jpql = new StringBuilder().append(" from Product product where product.deleted = false and product.sale = true");
+        List<Object> params = new ArrayList<>();
+
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+
+        if (!StringUtils.isBlank(path)) {
+            String[] pathArray = path.split("/");
+            if (pathArray.length % 2 != 0) {
+                throw new BadRequestException(messageSource
+                        .getMessage("error.query.path.validate", null, LocaleContextHolder.getLocale()));
+            }
+
+            for (int i = 0; i < pathArray.length / 2; i++) {
+
+                String key = pathArray[2 * i];
+                String value = pathArray[2 * i + 1];
+
+                if (key.equalsIgnoreCase("page")) {
+                    if (StringUtils.isNumeric(value)) {
+                        int pageNumber = Integer.parseInt(value);
+                        if (pageNumber > 0) pageModel.setNumber(pageNumber);
+                    }
+                } else if (key.equalsIgnoreCase("size")) {
+                    if (StringUtils.isNumeric(value)) {
+                        int size = Integer.parseInt(value);
+                        if (size > 0) pageModel.setSize(size);
+                    }
+                } else if (key.equalsIgnoreCase("sort")) {
+                    String[] sortArray = value.split(",");
+                    for (Field field : Product.class.getDeclaredFields()) {
+                        if (field.getName().equalsIgnoreCase(sortArray[0])) {
+                            pageModel.getSort().put("product." + sortArray[0], sortArray.length == 2 && sortArray[1].equalsIgnoreCase("desc") ? "desc" : "asc");
+                            break;
+                        }
+                    }
+                    for (Field field : AbstractEntity.class.getDeclaredFields()) {
+                        if (field.getName().equalsIgnoreCase(sortArray[0])) {
+                            pageModel.getSort().put("product." + sortArray[0], sortArray.length == 2 && sortArray[1].equalsIgnoreCase("desc") ? "desc" : "asc");
+                            break;
+                        }
+                    }
+                } else {
+                    for (Field field : Product.class.getDeclaredFields()) {
+                        if (field.getName().equalsIgnoreCase(key)) {
+                            if (field.getType().equals(String.class)) {
+                                params.add("%" + value.replace(" ", "%") + "%");
+                                jpql.append(" and product.").append(field.getName()).append(" like ?").append(params.size());
+                            } else if (field.getType().equals(Boolean.class)) {
+                                params.add(Boolean.valueOf(value));
+                                jpql.append(" and product.").append(field.getName()).append(" = ?").append(params.size());
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (pageModel.getNumber() == 0) pageModel.setNumber(1);
+        if (pageModel.getSize() == 0) pageModel.setSize(applicationConfig.getPage().getSize());
+        if (pageModel.getSort().isEmpty()) pageModel.getSort().put("product.lastModifiedDate", "desc");
+
+        pageModel.setTotalElements(productRepository.count("select count(product)" + jpql, params.toArray()));
+        pageModel.setTotalPages((int) (pageModel.getTotalElements() + pageModel.getSize() - 1) / pageModel.getSize());
+        if (pageModel.getTotalPages() != 0 && pageModel.getNumber() > pageModel.getTotalPages()) {
+            pageModel.setNumber(pageModel.getTotalPages());
+        }
+        if (pageModel.getNumber() == 1) pageModel.setFirst(true);
+        if (pageModel.getNumber() == pageModel.getTotalPages()) pageModel.setLast(true);
+        int[] range = {(pageModel.getNumber() - 1) * pageModel.getSize(), pageModel.getSize()};
+        List<Product> models = productRepository.findAll("select product" + jpql, params.toArray(), range, pageModel.getSort());
+        pageModel.setContent(models == null ? new ArrayList<>() : models);
+        return pageModel;
+    }
+
     /**
      * Not activated records should be automatically deleted after 3 days.
      * <p>

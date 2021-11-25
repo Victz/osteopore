@@ -413,23 +413,23 @@ const Story = (props) => {
                     {model.pictures && <div id="divPictures" className="panel-scroll my-1 p-1">
                         {model.pictures.split(",").map((picture, index) =>
                             <div className="col-4 col-sm-3 col-md-2 picture-wrapper" key={index}>
-                                <img src={loadPictureThumbnail(picture)} onClick={() => setLightbox((values) => ({...values, isOpen: !lightbox.isOpen, index: index}))}/>
+                                <img src={loadPictureThumbnail(picture)} onClick={() => setLightbox((values) => ({...values, isOpen: !lightbox.isOpen, index: index}))} alt='pictures'/>
                                 <span className="picture-remover" onClick={() => handlePictureRemove(picture)}><i className="fas fa-minus-circle fa-lg"></i></span>
                             </div>
                         )}
                         {lightbox.isOpen && (
                             <Lightbox
                                 mainSrc={lightbox.pictures[lightbox.index]}
-                                nextSrc={lightbox.pictures[lightbox.index + 1 == lightbox.pictures.length ? 0 : (lightbox.index + 1)]}
-                                prevSrc={lightbox.pictures[lightbox.index == 0 ? (lightbox.pictures.length - 1) : (lightbox.index - 1)]}
+                                nextSrc={lightbox.pictures[lightbox.index + 1 === lightbox.pictures.length ? 0 : (lightbox.index + 1)]}
+                                prevSrc={lightbox.pictures[lightbox.index === 0 ? (lightbox.pictures.length - 1) : (lightbox.index - 1)]}
                                 onCloseRequest={() => setLightbox((values) => ({...values, isOpen: !lightbox.isOpen}))}
                                 onMoveNextRequest={() => setLightbox((values) => ({
                                     ...values,
-                                    index: lightbox.index + 1 == lightbox.pictures.length ? 0 : (lightbox.index + 1)
+                                    index: lightbox.index + 1 === lightbox.pictures.length ? 0 : (lightbox.index + 1)
                                 }))}
                                 onMovePrevRequest={() => setLightbox((values) => ({
                                     ...values,
-                                    index: lightbox.index == 0 ? (lightbox.pictures.length - 1) : (lightbox.index - 1)
+                                    index: lightbox.index === 0 ? (lightbox.pictures.length - 1) : (lightbox.index - 1)
                                 }))}
                             />
                         )}
