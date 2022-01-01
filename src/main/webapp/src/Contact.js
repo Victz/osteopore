@@ -9,7 +9,6 @@ const Contact = (props) => {
                 <h3>Contact us</h3>
             </div>
             <p>
-
             </p>
         </div>
     );
